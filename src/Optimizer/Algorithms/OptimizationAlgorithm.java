@@ -45,9 +45,21 @@ public abstract class OptimizationAlgorithm {
 		ConfigurationReprot();
 		 AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm).execute() ;
 		 
-		    //IntegerSolution solution = (IntegerSolution) algorithm.getResult() ;
-		    List<IntegerSolution> population = (List<IntegerSolution>) algorithm.getResult() ;
-		  //  population.add(solution) ;
+		    
+		
+		 List<IntegerSolution> population=null;
+		 if(algorithm.getResult() instanceof java.util.List) // in case  of multi objectives algorithms  
+			 population = (List<IntegerSolution>) algorithm.getResult() ;
+		 else {
+			 population = new ArrayList<IntegerSolution>() ;
+			 population.add((IntegerSolution)algorithm.getResult());
+		 }
+			
+			 
+		 
+		 
+
+		 
 
 		    long computingTime = algorithmRunner.getComputingTime() ;
 
@@ -61,7 +73,7 @@ public abstract class OptimizationAlgorithm {
 		    JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
 		    JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
 
-		    //JMetalLogger.logger.info("Fitness: " + solution.getObjective(0)) ;
+		    
 		return population;
 	}
 	public void SetProblem(IntegerProblem Problem) {
@@ -76,7 +88,7 @@ public abstract class OptimizationAlgorithm {
 	}
 	public void AddingGetter( Method [] methods ,  Element element , Object object , Document doc) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
      for (Method c : methods) {
-    	//System.out.println(c.invoke(object));
+    	
     	 
     	
     	 
