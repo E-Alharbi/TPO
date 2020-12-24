@@ -10,21 +10,14 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.uma.jmetal.algorithm.Algorithm;
-import org.uma.jmetal.algorithm.impl.AbstractGeneticAlgorithm;
-import org.uma.jmetal.algorithm.singleobjective.geneticalgorithm.GenerationalGeneticAlgorithm;
 import org.uma.jmetal.problem.IntegerProblem;
-import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import Optimizer.Parameter.AlgorithmParameters;
-import Optimizer.Util.XML;
 
 public abstract class OptimizationAlgorithm {
 	protected IntegerProblem Problem;
