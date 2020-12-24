@@ -46,7 +46,23 @@
   </repository>
 </distributionManagement>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+	 <defaultGoal>install</defaultGoal>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>resources</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+		
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -56,6 +72,19 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			 <plugin>
+      <groupId>org.sonatype.plugins</groupId>
+      <artifactId>nexus-staging-maven-plugin</artifactId>
+      <version>1.6.7</version>
+      <extensions>true</extensions>
+      <configuration>
+        <serverId>ossrh</serverId>
+        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+        <autoReleaseAfterClose>false</autoReleaseAfterClose>
+      </configuration>
+    </plugin>
+    
+    
 		</plugins>
 	</build>
 	<dependencies>
