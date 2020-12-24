@@ -1,10 +1,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>ToolParametersOptimizer</groupId>
-	<artifactId>ToolParametersOptimizer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	 <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.e-alharbi</groupId>
+  <artifactId>TPO</artifactId>
+  <version>1.1</version>
+  
+  <name>TPO</name>
+  <description>A tool for optimizing any tool's parameters that can run from the command line</description>
+  <url>https://github.com/E-Alharbi/TPO</url>
+  <licenses>
+    <license>
+      <name>GNU GENERAL PUBLIC LICENSE Version 3</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+    </license>
+  </licenses>
+  
+  <developers>
+    <developer>
+      <name>Emad Alharbi</name>
+      <email>emad.alharbi@york.ac.uk</email>
+      <organization>University of York </organization>
+      <organizationUrl>https://www.york.ac.uk</organizationUrl>
+    </developer>
+     <developer>
+      <name>Emad Alharbi</name>
+      <email>emalharbi@ut.edu.sa</email>
+      <organization>University of Tabuk</organization>
+      <organizationUrl>https://www.ut.edu.sa</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/E-Alharbi/TPO.git</connection>
+    <developerConnection>scm:git:ssh://github.com:E-Alharbi/TPO.git</developerConnection>
+    <url>https://github.com/E-Alharbi/TPO</url>
+   </scm>
+  <distributionManagement>
+  <snapshotRepository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+</distributionManagement>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
