@@ -332,56 +332,18 @@ In this example, we optimise the parameters of a tool called Buccaneer. It is a 
 
 Here are the Buccaneer’s parameters
 
-| Parameter
 
- | Value type
 
- | Need to optimise?
+| Parameter | Value type | Need to optimise? |
+| ------------- | ------------- |-------------|
+| mtzin | File | No|
+| seqin | File | No|
+| colin-fo | String | No|
+| colin-hl | String | No|
+| buccaneer-fast | String | Yes|
+| cycles | Number | Yes|
 
- |
-| --------- | ---------- | ----------------- |
-| mtzin
 
-     | File
-
-       | No
-
-                |
-| seqin
-
-     | File
-
-       | No
-
-                |
-| colin-fo
-
-  | String
-
-     | No
-
-                |
-| colin-hl
-
-  | String
-
-     | No
-
-                |
-| buccaneer-fast
-
- | String
-
-     | Yes
-
-               |
-| cycles
-
-         | Number
-
-     | Yes
-
-               |
 In the below code, we defined Buccaneer parameters and their values. In line 10, we have given the parameter a value. This value is just a dummy value. The optimisation algorithm will not be necessary to use this dummy value because it will be changed during the optimisation process. In lines 11 and 12, these two parameters have no values because they are boolean flags.
 
 ```
@@ -441,82 +403,23 @@ Now we have to write the evaluator class. As you can see below in the evaluate m
 
 Here are the algorithms that are supported by TPO
 
-| Algorithms
+| Algorithms | Single/Multi objective |
+| ------------- | ------------- |
+| CoralReefs | Single |
+| ESPEA | Multi |
+| PAES | Multi |
+| EvolutionStrategy | Single |
+| NonElitistEvolutionStrategy | Single |
+| ParallelMOCell | Multi |
+| ParallelNSGAII | Multi |
+| ParallelNSGAIII | Multi |
+| ParallelSPEA2 | Multi |
+| SMSEMOA | Multi |
+| GA | Single |
+| ParallelGA | Single |
+| SteadyStateGA | Single |  
+| RandomSearch | Multi | 
 
- | Single/Multi objective
-
- |
-| -------------- | ---------------------- | ----------------- |  |  |
-| CoralReefs
-
-     | Single
-
-                 |
-| ESPEA
-
-          | Multi
-
-                  |
-| PAES
-
-           | Multi
-
-                  |
-| EvolutionStrategy
-
- | Single
-
-                 |
-| NonElitistEvolutionStrategy
-
- | Single
-
-                 |
-| ParallelMOCell
-
-              | Multi
-
-                  |
-| ParallelNSGAII
-
-              | Multi
-
-                  |
-| ParallelNSGAIII
-
-             | Multi
-
-                  |
-| ParallelSPEA2
-
-               | Multi
-
-                  |
-| SMSEMOA
-
-                     | Multi
-
-                  |
-| GA
-
-                          | Single
-
-                 |
-| ParallelGA
-
-                  | Single
-
-                 |
-| SteadyStateGA
-
-               | Single
-
-                 |
-| RandomSearch
-
-                | Multi
-
-                  |
 
 # Configuration of optimization algorithms
 
