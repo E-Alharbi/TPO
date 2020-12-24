@@ -3,6 +3,8 @@ package Optimizer.Util;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
+
 public class Folder {
 	
 	//synchronized for thread safety when run  ParallelGA 
@@ -16,6 +18,10 @@ File Folder;
 	public File GetRecentCreatedFolder() {
 		return Folder;
 	}
+	public void RemoveFolder(String folder) throws IOException {
+		 FileUtils.deleteDirectory(new File(folder)); 
+	}
+	
 	public boolean CreateFolder(String Name) {
 		synchronized(Folder.class) {
 			//System.out.println("Thread want to Create a folder "+ Thread.currentThread().getName());

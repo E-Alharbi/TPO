@@ -63,6 +63,10 @@ public Tool (Tool tool ) {
 	public String GetName() {
 		return Name;
 	}
+	public void SetName(String Name) {
+		this.Name=Name;
+		this.WorkingPath=Name;
+	}
 	public void SetNoWorkingPath(boolean status) {
 		NoWorkingPath=status;
 	}
@@ -82,11 +86,28 @@ public Tool (Tool tool ) {
 		return ErrorLog;
 	}
 	
+	public int GetLengthOfInd() {
+		int Len=GetNeededOptimizeParameters().size();
+		for(int p=0 ; p < GetNeededOptimizeParameters().size();++p) {
+			Len+=GetNeededOptimizeParameters().get(p).LengthInIndividual();
+		}
+		
+		return Len;
+	}
 	public void SetWorkingPath(String Path) {
 		 WorkingPath=Path;
 	}
 	public String GetWorkingPath() {
 		return  WorkingPath;
+	}
+	public boolean CreateWorkingPath() {
+		
+		String Folder=String.valueOf(Thread.currentThread().getName()+System.currentTimeMillis());
+		if(new File(Folder).exists())
+			return CreateWorkingPath();
+		
+		SetWorkingPath(Folder);
+		return true;
 	}
 	public void SetKeywords(Vector<Parameter> keywords) {
 		 this.Keywords=keywords;
@@ -104,20 +125,29 @@ public Tool (Tool tool ) {
 		return Parameters;
 	}
 	public void SetParametersValueBasedOnOptimizationAlgorithm(IntegerSolution solution) {
-		//System.out.println("SetParametersValueBasedOnOptimizationAlgorithm ");
-		for (int i = 0; i < solution.getNumberOfVariables()/2; i++) {
+		
+		
+		int ValueIndex=GetNumberOfNeededOptimizeParameters();
+		for (int i = 0; i < GetNumberOfNeededOptimizeParameters(); i++) {
+			
 		      int Used = solution.getVariableValue(i) ;
-		      int Value=solution.getVariableValue((solution.getNumberOfVariables()/2)+i);
-		     // System.out.print(solution.getVariableValue(i)+" ");
+		     // int Value=solution.getVariableValue((GetNumberOfNeededOptimizeParameters())+i);
+		      Vector<Integer> Value = new Vector<Integer>();
+		      while(Value.size()<this.GetNeededOptimizeParameters().get(i).LengthInIndividual())
+		      {
+		    	  Value.add(solution.getVariableValue(ValueIndex));
+		    	  ValueIndex++;
+		      }
+		      
 		      this.GetNeededOptimizeParameters().get(i).SetValueBasedOnOptimizationAlgorithm(Used,Value);
 		     
 	}
-		//System.out.println();	
+		
 	}
 	public  Vector<Parameter> GetUsingParameters() {
 		Vector<Parameter> Parameters = new Vector<Parameter> ();
 		for(int i=0 ; i< Keywords.size();++i) {
-			if(Keywords.get(i).IsThisParameterUsed())
+			if(Keywords.get(i).IsUsed())
 				Parameters.add(Keywords.get(i));
 		}
 		return Parameters;
@@ -127,6 +157,14 @@ public Tool (Tool tool ) {
 		Vector<Parameter> parameters = new Vector<Parameter>();
 		for(int i=0 ; i< Keywords.size();++i) {
 			if(Keywords.get(i).GetKeyword().equals(Name))
+				 parameters.add(Keywords.get(i));
+		}
+		return parameters;
+	}
+	public  Vector<Parameter> GetKeywordByValue(String Val) {
+		Vector<Parameter> parameters = new Vector<Parameter>();
+		for(int i=0 ; i< Keywords.size();++i) {
+			if(Keywords.get(i).GetValue().equals(Val))
 				 parameters.add(Keywords.get(i));
 		}
 		return parameters;
@@ -158,7 +196,7 @@ public Tool (Tool tool ) {
 	public void Run() throws IOException {
 		if( NoWorkingPath==false) {
 		if(new Folder().CreateFolder(GetWorkingPath())==false) {
-			throw new FileAlreadyExistsException("Folder Exists");  
+			throw new FileAlreadyExistsException(GetWorkingPath()+" folder cannot be created because the folder is exists. Remove the folder!");  
 			
 		}
 		}
@@ -174,7 +212,8 @@ public Tool (Tool tool ) {
 		
 		String[] callAndArgs = new String[Args.size()];
 		callAndArgs = Args.toArray(callAndArgs);
-		//System.out.println(Arrays.toString(callAndArgs));
+		
+		System.out.println(Arrays.toString(callAndArgs));
 		
 		Process p = Runtime.getRuntime().exec(callAndArgs, null, new File(GetWorkingPath()));
 
@@ -191,20 +230,24 @@ public Tool (Tool tool ) {
 
 			            
 			             while ((st = stdInput.readLine()) != null) {
-			            	// System.out.println(st);
-			            	 Log+=st+"\n";
+			            	
+			            	 if(Log.trim().length()!=0)
+			            		 Log+="\n";
+			            	 
+			            	 Log+=st;
 		                 
 		                
 			             }
 			             while ((st = stdError.readLine()) != null) {
 
-			               //  System.out.println(st);
+			                 //System.out.println("error "+st);
 			                 ErrorLog+=st+"\n";
 			             }
 			             
 	}
 public void Report(IntegerSolution solution) throws ParserConfigurationException, TransformerException {
 
+	
 	 this.SetParametersValueBasedOnOptimizationAlgorithm(solution);
 	 
 	 XML xml = new XML();
@@ -214,17 +257,23 @@ public void Report(IntegerSolution solution) throws ParserConfigurationException
    
     
     xml.getDocument().appendChild(rootElement);
-	for (int i = 0; i < solution.getNumberOfVariables()/2; i++) {
+	for (int i = 0; i < GetNumberOfNeededOptimizeParameters(); i++) {
 		Element ParameterRoot = xml.getDocument().createElement("Parameter");
 		
-		int Used = solution.getVariableValue(i) ;
-	    int Value=solution.getVariableValue((solution.getNumberOfVariables()/2)+i);
-	      //System.out.print(solution.getVariableValue(i)+" ");
+		//int Used = solution.getVariableValue(i) ;
+	   // int Value=solution.getVariableValue((GetNumberOfNeededOptimizeParameters())+i);
+	      
 		
 		 Element Keyword = xml.getDocument().createElement("Keyword");
 		 Element KeywordVlaue = xml.getDocument().createElement("Value");
 		 Element IsUsed = xml.getDocument().createElement("Used");
 		 
+		 Keyword.setTextContent(this.GetNeededOptimizeParameters().get(i).GetKeyword());
+		 KeywordVlaue.setTextContent(this.GetNeededOptimizeParameters().get(i).GetValue());
+		 IsUsed.setTextContent(String.valueOf(this.GetNeededOptimizeParameters().get(i).IsUsed()));
+		 
+		 
+		 /*
 		 if(Used==0)
 			 IsUsed.setTextContent(String.valueOf("False"));
 			
@@ -244,9 +293,12 @@ public void Report(IntegerSolution solution) throws ParserConfigurationException
 		 }
 		 if(this.GetNeededOptimizeParameters().get(i).GetValueType()== Parameter.ValueType.SetOfOptions) {
 			
-			 KeywordVlaue.setTextContent(String.valueOf(this.GetNeededOptimizeParameters().get(i).GetSetOfOptionsType()[Value]));
-		 }
+			 if(this.GetNeededOptimizeParameters().get(i).IsCombination()==false)
+			 KeywordVlaue.setTextContent(String.valueOf(this.GetNeededOptimizeParameters().get(i).GetSetOfOptionsType().GetByIndex(this.GetNeededOptimizeParameters().get(i).LengthInIndividual()-1).GetByIndex(Value)));
+			 
 		 
+		 }
+		 */
 		 
 		 ParameterRoot.appendChild(Keyword);
 		 ParameterRoot.appendChild(KeywordVlaue);

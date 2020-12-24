@@ -12,6 +12,7 @@ public class Txt {
 	
 	
 	public synchronized void WriteTxtFile(String FileName, String Txt) throws IOException{
+		
 		File yourFile = new File(FileName);
 		yourFile.createNewFile();
 		 BufferedWriter output;

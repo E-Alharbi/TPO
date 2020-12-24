@@ -3,8 +3,11 @@ package Optimizer.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 
 import org.uma.jmetal.solution.IntegerSolution;
+
+import Optimizer.Parameter.Type.OptionsSet;
 
 public class Parameter {
 
@@ -16,10 +19,11 @@ public class Parameter {
 	ParameterType Parametertype;
 	int LowerLimitforNumberType=0;
 	int UpperLimitforNumberType = Integer.MAX_VALUE;// Default
-	String [] SetOfOptionsType;
+	//String [] SetOfOptionsType;
 	boolean Used=true;
 	boolean Optimize=false;
-	
+	boolean Combination=false;
+	OptionsSet optionsset=null;
 	//Copy Constructor
 	public Parameter (Parameter P) {
 		
@@ -36,18 +40,23 @@ public class Parameter {
 		this.UpperLimitforNumberType=new Integer (P.GetUpperLimitforNumberType());
 		
 		if(P.GetSetOfOptionsType()==null)
-			this.SetOfOptionsType=null;
+			this.optionsset=null;
 		else
-		this.SetOfOptionsType=P.GetSetOfOptionsType().clone();
+		this.optionsset=new OptionsSet(P.optionsset);
 		
-		this.Used=new Boolean (P.IsThisParameterUsed());
+		this.Used=new Boolean (P.IsUsed());
 		this.Optimize=new Boolean (P.IsThisParameterNeedToOptimize());
-		
+		this.Combination=new Boolean (P.Combination);
 		
 	}
-	public boolean IsThisParameterUsed() {
+	public boolean IsUsed() {
 		return Used ;
 	}
+	public boolean IsCombination() {
+		return Combination ;
+	}
+	
+	
 	public boolean IsThisParameterNeedToOptimize() {
 		return Optimize ;
 	}
@@ -70,10 +79,14 @@ public class Parameter {
 		this.Optimize=Optimize;
 		
 	}
-	public Parameter (String keyword, String value,ParameterType Parametertype , ValueType type , String [] SetOfOptionsType , boolean Optimize) {
+	public Parameter (String keyword, String value,ParameterType Parametertype , ValueType type , OptionsSet optionsset , boolean Optimize, boolean Combination) {
 		this( keyword,  value , Parametertype ,  type,Optimize );
 		
-		this.SetOfOptionsType=SetOfOptionsType;
+		this.optionsset=optionsset;
+		this.Combination=Combination;
+		if(Combination==false && this.optionsset.size()>1) {
+			System.out.println("Warring: You use mutiple item groups and you set Combination to false. Only first item group will be used and the rest will be ignored");
+		}
 	}
 	public Parameter (String keyword, String value,ParameterType Parametertype , ValueType type,int LowerLimitforNumberType ,int UpperLimitforNumberType,boolean Optimize) {
 		this( keyword,  value , Parametertype ,  type,Optimize );
@@ -91,10 +104,10 @@ public class Parameter {
 		this.SecondKeyword=SecondKeyword;
 		this.Optimize=Optimize;
 	}
-	public Parameter (String keyword, String value,String SecondKeyword,ParameterType Parametertype , ValueType type , String [] SetOfOptionsType,boolean Optimize) {
+	public Parameter (String keyword, String value,String SecondKeyword,ParameterType Parametertype , ValueType type , OptionsSet optionsset,boolean Optimize) {
 		this( keyword,  value ,SecondKeyword, Parametertype ,  type,Optimize );
 		
-		this.SetOfOptionsType=SetOfOptionsType;
+		this.optionsset=optionsset;
 	}
 	public Parameter (String keyword, String value,String SecondKeyword,ParameterType Parametertype , ValueType type,int LowerLimitforNumberType ,int UpperLimitforNumberType,boolean Optimize) {
 		this( keyword,  value ,SecondKeyword, Parametertype ,  type,Optimize );
@@ -148,8 +161,8 @@ public class Parameter {
 	public int  GetUpperLimitforNumberType() {
 		return UpperLimitforNumberType;
 	}
-	public String [] GetSetOfOptionsType() {
-		return SetOfOptionsType ;
+	public OptionsSet GetSetOfOptionsType() {
+		return optionsset ;
 	}
 	public List<String> ToList() {
 		List<String> ParameterInArray = new ArrayList<String>();
@@ -167,48 +180,61 @@ public class Parameter {
 		}
 		return ParameterInArray;
 	}
-	public int LowerBound() {
+	public Vector<Integer> LowerBound() {
+		Vector<Integer> LowerBounds= new Vector<Integer>();
 		if(GetValueType()==ValueType.Number) {
-			return GetLowerLimitforNumberType();
+			for(int i=0 ; i <LengthInIndividual();++i)
+				LowerBounds.add(GetLowerLimitforNumberType());
+			//return GetLowerLimitforNumberType();
 		}
 		else {
-			return 0;
+			for(int i=0 ; i <LengthInIndividual();++i)
+				LowerBounds.add(0);
+			//return 0;
 		}
-		/*
-		if(GetParameterType()==ParameterType.Compulsory) {
-			if(GetValueType()==ValueType.Number && GetLowerLimitforNumberType() > 0)
-				return GetLowerLimitforNumberType();
-			
-			//if(GetValueType()==ValueType.SetOfOptions)
-			//return 0; // first element in an array has index 0
-			
-			return 1; // must exist in the solution 
-		}
-		else {// then its optional 
-			if(GetValueType()==ValueType.Number)
-				return GetLowerLimitforNumberType();
-			
-			return 0; // not necessary to be in the  solution
-		}
-		*/
+		return LowerBounds;
 	}
 	
-	public int  UpperBound() {
+	public Vector<Integer>  UpperBound() {
+		Vector<Integer> UpperBounds= new Vector<Integer>();
 		if(GetValueType()==ValueType.Number) {
-			return GetUpperLimitforNumberType();
+			UpperBounds.add(GetUpperLimitforNumberType());
+			//return GetUpperLimitforNumberType();
 		}
 		if(GetValueType()==ValueType.File) {
-			return 1;
+			UpperBounds.add(1);
+			//return 1;
 		}
 		if(GetValueType()==ValueType.String) {
-			return 1;
+			UpperBounds.add(1);
+			//return 1;
 		}
-		if(GetValueType()==ValueType.SetOfOptions) {
-			return GetSetOfOptionsType().length-1; // last element in an array is len -1
+		if(GetValueType()==ValueType.SetOfOptions && this.Combination==false) {
+			UpperBounds.add(GetSetOfOptionsType().GetByIndex(LengthInIndividual()-1).size()-1);
+			
+			//return GetSetOfOptionsType().length-1; // last element in an array is len -1
 			
 		}
-		return 0;
+		if(GetValueType()==ValueType.SetOfOptions && this.Combination==true) {
+			for(int i=0 ; i <LengthInIndividual();++i) {
+				UpperBounds.add(GetSetOfOptionsType().GetByIndex(i).size()-1);
+			}
+			
+			
+			//return GetSetOfOptionsType().length-1; // last element in an array is len -1
+			
+		}
+		return UpperBounds;
 		
+	}
+	
+	
+	public int LengthInIndividual() {
+		if(GetValueType()== ValueType.SetOfOptions && this.Combination==true)
+			return  GetSetOfOptionsType().size();
+		
+		return 1; //else
+			
 	}
 	
 	@Override
@@ -216,45 +242,45 @@ public class Parameter {
 		return "Parameter [Keyword=" + Keyword + ", Value=" + Value + ", SecondKeyword=" + SecondKeyword + ", type="
 				+ type + ", Parametertype=" + Parametertype + ", LowerLimitforNumberType=" + LowerLimitforNumberType
 				+ ", UpperLimitforNumberType=" + UpperLimitforNumberType + ", SetOfOptionsType="
-				+ Arrays.toString(SetOfOptionsType) + ", Used=" + Used + ", LowerBound()=" + LowerBound()
+				+ GetSetOfOptionsType() + ", Used=" + Used + ", LowerBound()=" + LowerBound()
 				+ ", UpperBound()=" + UpperBound() + "]";
 	}
 	
-	public void SetValueBasedOnOptimizationAlgorithm(int EncodingUsed, int Value) {
+	public void SetValueBasedOnOptimizationAlgorithm(int EncodedUsed, Vector<Integer> Value) {
 		
-		if((GetValueType()==ValueType.File ||GetValueType()==ValueType.String)  && EncodingUsed==0) {
+		if((GetValueType()==ValueType.File ||GetValueType()==ValueType.String)  && EncodedUsed==0) {
 			Used=false;
 		}
-		if((GetValueType()==ValueType.File ||GetValueType()==ValueType.String) && EncodingUsed!=0) {
+		if((GetValueType()==ValueType.File ||GetValueType()==ValueType.String) && EncodedUsed!=0) {
 			Used=true;
 		}
 		if(GetValueType()==ValueType.Number)
 		{
-			if(EncodingUsed==0) {
+			if(EncodedUsed==0) {
 			Used=false;
-			SetValue(String.valueOf(Value));
+			SetValue(String.valueOf(Value.get(0)));
 			}
 			else {
 				Used=true;
-				SetValue(String.valueOf(Value));
+				SetValue(String.valueOf(Value.get(0)));
 			}
 		}
 			
-		//if(GetValueType()==ValueType.SetOfOptions && GetParameterType()==ParameterType.Compulsory)
-		//{
-			//Used=true;
-			//SetValue(GetSetOfOptionsType()[EncodingValue-1]);
-		//}
+		
 		if(GetValueType()==ValueType.SetOfOptions)
 		{
-			if(EncodingUsed==0) {
+			if(EncodedUsed==0) {
 			Used=false;
 			
 			}
 			else {
 				Used=true;
-				
-				SetValue(GetSetOfOptionsType()[Value]);
+				String v="";
+				for(int i=0 ; i < Value.size();++i) {
+					//v+=GetSetOfOptionsType()[Value.get(i)];
+					v+=GetSetOfOptionsType().GetByIndex(i).GetByIndex(Value.get(i));
+				}
+				SetValue(v);
 			}
 		}
 		
