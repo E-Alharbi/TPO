@@ -14,11 +14,14 @@ https://github.com/E-Alharbi/ToolParametersOptimizer
 Also, it is available in Maven repository
 
 ```
-  <dependency>
-<groupId>com.github.e-alharbi</groupId>
- <artifactId>ToolParametersOptimizer</artifactId>
- <version>1.1</version>
+  <!-- https://mvnrepository.com/artifact/com.github.e-alharbi/Tool-Parameters-Optimizer -->
+<dependency>
+    <groupId>com.github.e-alharbi</groupId>
+    <artifactId>Tool-Parameters-Optimizer</artifactId>
+    <version>1.1</version>
 </dependency>
+
+
 ```
 
 
