@@ -501,7 +501,7 @@ If you have multiple groups of values, and you want the keyword, x takes a value
              tool.GetKeywords().add(opts);
 ```
 
-In the above code, the tool will be run in different x’s values combinations. For example, `java -jar tool x ag`
+In the above code, the tool will be run using different x’s values combinations. For example, `java -jar tool x ag`
 
 ## 6. Output of optimised tool
 
