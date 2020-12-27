@@ -8,12 +8,12 @@ Tool Parameters Optimizer(TPO) is a tool for optimizing any tool’s parameters 
 TPO can be downloaded from GitHub
 
 ```
-https://github.com/E-Alharbi/ToolParametersOptimizer
+https://github.com/E-Alharbi/TPO
 ```
 
 Also, it is available in Maven repository
 
-```
+```xml
   <!-- https://mvnrepository.com/artifact/com.github.e-alharbi/Tool-Parameters-Optimizer -->
 <dependency>
     <groupId>com.github.e-alharbi</groupId>
@@ -25,54 +25,41 @@ Also, it is available in Maven repository
 ```
 
 
-* Simple example
-
-
-    * Single objective optimization
-
-
+The document  contains the following  
+1. Simple example
+	* Single objective optimization
     * Multi-objective optimization
 
 
-* Advanced example
-
-
+2. Advanced example
     * Single objective optimisation
 
 
-* Optimization algorithms
+3. Optimization algorithms
 
 
-* Configuration of optimization algorithms
+4. Configuration of optimization algorithms
 
 
-* Parameters
-
-
+5. Parameters
     * Parameters types
-
-
     * Parameters value types
 
 
-* Output of optimised tool
-
-
+6. Output of optimised tool
     * Search for files
-
-
     * Save log file
 
     
-    # Simple example
+## 1. Simple example
 
-## Single objective optimization
+### Single objective optimization
 
 Let assume we have a tool that fills in an array with ones. The tool runs from the command line and takes two parameters: the array start index and end index. Our objective is to fill in all elements in the array with ones. For example, if the array size is 100, then the two parameters should be 0 and 100.
 
 The tool code:
 
-```
+```java
  public static void main(String[] args) {
 
 
@@ -98,7 +85,7 @@ Copy the above code in a java project and export a runnable jar file.
 
 The tool can be run from the command line using this command.
 
-```
+```sh 
 java -jar SimpleExample.jar 0 50
 ```
 
@@ -106,7 +93,7 @@ Now, let use TPO to optimize these parameters.
 
 In a new java project, copy the following code.
 
-```
+```java
  public static void main(String[] args) {
 
 
@@ -146,7 +133,7 @@ In a new java project, copy the following code.
 
 We need now to write our solution evaluator that evaluate the solutions found by the optimization algorithm.
 
-```
+```java
  public class SimpleExampleProblem extends Problem {
 
      public SimpleExampleProblem(Tool tool) {
@@ -187,7 +174,7 @@ The output of TPO is an XML file that contains the parameters and its optimal va
 
 `ParametersReport.xml`
 
-```
+```xml
  <?xml version="1.0" encoding="UTF-8" standalone="no"?>
      <Parameters>
  <Parameter>
@@ -203,11 +190,11 @@ The output of TPO is an XML file that contains the parameters and its optimal va
      </Parameters>
 ```
 
-## Multi-objective optimization
+### Multi-objective optimization
 
 We changed the tool that we want to optimize to fill in two arrays. Our objective is to fill in the first array by ones and the second by zeros.
 
-```
+```java
      public static void main(String[] args) {
              // TODO Auto-generated method stub
 
@@ -242,19 +229,19 @@ We changed the tool that we want to optimize to fill in two arrays. Our objectiv
 
 The tool can be run from the command line using this command.
 
-```
+```sh
 java -jar SimpleExample.jar 0 99 94 85
 ```
 
 The output
 
-```
+```sh
 99-0
 ```
 
 We need to change the parameters to add these new parameters.
 
-```
+```java
      Tool SE = new Tool("SimpleExample");
              Vector<Parameter> keywords = new Vector<Parameter>();
              keywords.addElement(new Parameter("java","-jar", Parameter.ParameterType.Compulsory,Parameter.ValueType.File,false ));
@@ -277,7 +264,7 @@ We need to change the parameters to add these new parameters.
 
 Also, we need to change the number of objectives.
 
-```
+```java
      public class SimpleExampleProblem extends Problem {
 
      public SimpleExampleProblem(Tool tool) {
@@ -327,9 +314,9 @@ Also, we need to change the number of objectives.
 
 2. Line 34: we add the second objective that decreases the ones in the second array.
  
- # Advanced example
+ ## 2. Advanced example
 
-## Single objective optimisation
+### Single objective optimisation
 
 In this example, we optimise the parameters of a tool called Buccaneer. It is a tool to build a protein model, and it has too many parameters. We will optimise some of these parameters.
 
@@ -349,7 +336,7 @@ Here are the Buccaneer’s parameters
 
 In the below code, we defined Buccaneer parameters and their values. In line 10, we have given the parameter a value. This value is just a dummy value. The optimisation algorithm will not be necessary to use this dummy value because it will be changed during the optimisation process. In lines 11 and 12, these two parameters have no values because they are boolean flags.
 
-```
+```java
              Tool tool = new Tool("Buccaneer");
              Vector<Parameter> keywords = new Vector<Parameter>();
              keywords.addElement(new Parameter("buccaneer_pipeline","", Parameter.ParameterType.Compulsory,Parameter.ValueType.File,false ));
@@ -371,7 +358,7 @@ In the below code, we defined Buccaneer parameters and their values. In line 10,
 
 Now we have to write the evaluator class. As you can see below in the evaluate method, we set the new Buccaneer’s parameters values, and we run it using these new parameters values. Once Buccaneer done, it will create a file called Buccaneer.pdb which we will use to evaluate the performance of Buccaneer. In line 23, we use Output to search for this file in the Buccaneer directory and calculate the completeness we use here to evaluate the Buccaneer performance.
 
-```
+```java
      @SuppressWarnings("serial")
      public class BuccaneerOptimizationProblem extends Problem {
 
@@ -402,7 +389,7 @@ Now we have to write the evaluator class. As you can see below in the evaluate m
              }
 ```
 
-# Optimization algorithms
+## 3. Optimization algorithms
 
 Here are the algorithms that are supported by TPO
 
@@ -424,11 +411,11 @@ Here are the algorithms that are supported by TPO
 | RandomSearch | Multi | 
 
 
-# Configuration of optimization algorithms
+## 4. Configuration of optimization algorithms
 
 Below are the optimization algorithms parameters. These parameters set to the default. However, it can be changed using static class AlgorithmParameters
 
-```
+```java
      public static double CrossoverProbability=0.9;
      public static double DistributionIndex=20;
      public static double MutationProbability=0.2;
@@ -452,13 +439,13 @@ Below are the optimization algorithms parameters. These parameters set to the de
      public static int K=1;
 ```
 
-# Parameters
+## 5. Parameters
 
-## Parameters types
+### Parameters types
 
 You can set either a parameter is optional or compulsory  (`Parameter.ParameterType.Compulsory`  or `Parameter.ParameterType.Optional`). Optional here means an optimisation algorithm to determine whether the tool is better when run with or without this optional parameter.
 
-## Parameters value types
+### Parameters value types
 
 
 1. `Parameter.ValueType.Number`
@@ -474,7 +461,7 @@ You can set either a parameter is optional or compulsory  (`Parameter.ParameterT
 
 Use a set of options when a keyword takes single or multiple values from a set of values. For example, if a tool uses a keyword x and the possible group of values for this keyword is {a,b,c}. The parameter should be declared as in the below code.
 
-```
+```java
      OptionsSet os = new OptionsSet();
 
                      ItemGroup i1 = new ItemGroup();
@@ -492,7 +479,7 @@ In the above code, the tool will be run using x keyword like this `java -jar too
 
 If you have multiple groups of values, and you want the keyword, x takes a value from each group in a combination, use the set of options as the following code.
 
-```
+```java
      OptionsSet os = new OptionsSet();
 
                      ItemGroup i1 = new ItemGroup();
@@ -516,24 +503,24 @@ If you have multiple groups of values, and you want the keyword, x takes a value
 
 In the above code, the tool will be run in different x’s values combinations. For example, `java -jar tool x ag`
 
-# Output of optimised tool
+## 6. Output of optimised tool
 
-## Search for files
+### Search for files
 
 If your tool that you to optimise write out some files and you to access to these files, TPO has a class called `Output` to easily manages these files. Assumes we have a Tool. This tool creates a working directory called “ToolDirectory” and writes an output file to this directory called “File1”. The following code shows how you can access to File1.
 
-```
+```java
      Output out = new Output(Tool);
      Vector<File> files = out.SerachForFileByName("File1")
 ```
 
 You can also search recursively using `out.FilesByNameRecursively`
 
-## Save log file
+### Save log file
 
 If you want to save a log file produced by the tool that you want to optimise, `Output` class has a method to save this log file.
 
-```
+```java
      Output out = new Output(Tool);
      out.SaveLog();
 ```
