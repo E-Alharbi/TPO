@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.uma.jmetal.problem.impl.AbstractIntegerProblem;
+import org.uma.jmetal.solution.IntegerSolution;
 
 import Optimizer.Tool.Tool;
 
@@ -41,5 +42,8 @@ public abstract class Problem extends AbstractIntegerProblem {
 		setUpperLimit(upperLimit);
 		this.tool = tool;
 	}
+	
+	
+	
 
 }
