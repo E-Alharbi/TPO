@@ -104,7 +104,9 @@ public class Tool {
 
 	public boolean CreateWorkingPath() {
 
-		String Folder = String.valueOf(Thread.currentThread().getName() + System.currentTimeMillis());
+		//String Folder = String.valueOf(Thread.currentThread().getName() + System.currentTimeMillis());
+		String Folder = String.valueOf(Thread.currentThread().getName()+"-"+Thread.currentThread().getId()+"-"+ System.currentTimeMillis());
+
 		if (new File(Folder).exists())
 			return CreateWorkingPath();
 
@@ -225,29 +227,27 @@ public class Tool {
 		String[] callAndArgs = new String[Args.size()];
 		callAndArgs = Args.toArray(callAndArgs);
 
-		System.out.println(Arrays.toString(callAndArgs));
+		//System.out.println(Arrays.toString(callAndArgs));
 
 		Process p = Runtime.getRuntime().exec(callAndArgs, null, new File(GetWorkingPath()));
 
 		String st = null;
-		BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		try (BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
-		BufferedReader stdError = new BufferedReader(new
+			while ((st = stdInput.readLine()) != null) {
 
-		InputStreamReader(p.getErrorStream()));
+				if (Log.trim().length() != 0)
+					Log += "\n";
 
-		while ((st = stdInput.readLine()) != null) {
+				Log += st;
 
-			if (Log.trim().length() != 0)
-				Log += "\n";
+			}
+			while ((st = stdError.readLine()) != null) {
 
-			Log += st;
-
-		}
-		while ((st = stdError.readLine()) != null) {
-
-			// System.out.println("error "+st);
-			ErrorLog += st + "\n";
+				// System.out.println("error "+st);
+				ErrorLog += st + "\n";
+			}
 		}
 
 	}
