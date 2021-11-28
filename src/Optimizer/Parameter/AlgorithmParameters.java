@@ -36,7 +36,7 @@ public class AlgorithmParameters {
 	public static int EvolutionStrategyMu = 1;
 	public static int EvolutionStrategyLambda = 10;
 	public static int PopulationSize = 1000;
-	public static int numberOfCores = Runtime.getRuntime().availableProcessors();
+	public static int numberOfCores = Runtime.getRuntime().availableProcessors()-1;//keep one for main thread
 	public static int archiveSize = 200;
 	public static double epsilon = 0.01;
 	public static int BiSections = 5;
