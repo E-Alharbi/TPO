@@ -233,7 +233,7 @@ public class Tool {
 
 		String st = null;
 		try (BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			
 
 			while ((st = stdInput.readLine()) != null) {
 
@@ -243,12 +243,16 @@ public class Tool {
 				Log += st;
 
 			}
-			while ((st = stdError.readLine()) != null) {
-
-				// System.out.println("error "+st);
-				ErrorLog += st + "\n";
-			}
 		}
+		
+			try (BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+				while ((st = stdError.readLine()) != null) {
+
+					// System.out.println("error "+st);
+					ErrorLog += st + "\n";
+				}
+			}
+		
 
 	}
 
