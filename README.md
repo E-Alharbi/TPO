@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.com/E-Alharbi/TPO.svg?token=z92wc12inrqPgG6Faxv2&branch=master)](https://travis-ci.com/E-Alharbi/TPO)
 # Welcome to Tool Parameters Optimizer(TPO) documentation
 
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/E-Alharbi/TPO.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/E-Alharbi/TPO/alerts/)
+
 Tool Parameters Optimizer(TPO) is a tool for optimizing any tool’s parameters that can run from command line.
 
 ## Installation
@@ -524,4 +526,6 @@ If you want to save a log file produced by the tool that you want to optimise, `
      Output out = new Output(Tool);
      out.SaveLog();
 ```
+
+
     
