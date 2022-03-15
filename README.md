@@ -525,5 +525,15 @@ If you want to save a log file produced by the tool that you want to optimise, `
      out.SaveLog();
 ```
 
-
+## Citing
+```
+@software{TPO,
+  author = {Alharbi,Emad},
+  doi = {},
+  month = {03},
+  title = {{TPO: A tool for optimizing a tool's parameters}},
+  url = {https://github.com/E-Alharbi/TPO},
+  year = {2022}
+}
+```
     
