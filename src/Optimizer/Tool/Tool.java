@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import org.uma.jmetal.solution.IntegerSolution;
 import org.w3c.dom.Element;
 
+import Optimizer.Parameter.AlgorithmParameters;
 import Optimizer.Parameter.Parameter;
 import Optimizer.Util.Folder;
 import Optimizer.Util.XML;
@@ -104,8 +106,10 @@ public class Tool {
 
 	public boolean CreateWorkingPath() {
 
-		//String Folder = String.valueOf(Thread.currentThread().getName() + System.currentTimeMillis());
-		String Folder = String.valueOf(Thread.currentThread().getName()+"-"+Thread.currentThread().getId()+"-"+ System.currentTimeMillis());
+		// String Folder = String.valueOf(Thread.currentThread().getName() +
+		// System.currentTimeMillis());
+		String Folder = String.valueOf(Thread.currentThread().getName() + "-" + Thread.currentThread().getId() + "-"
+				+ System.currentTimeMillis());
 
 		if (new File(Folder).exists())
 			return CreateWorkingPath();
@@ -227,13 +231,20 @@ public class Tool {
 		String[] callAndArgs = new String[Args.size()];
 		callAndArgs = Args.toArray(callAndArgs);
 
-		//System.out.println(Arrays.toString(callAndArgs));
+		Process p = null;
+		try {
+			p = Runtime.getRuntime().exec(callAndArgs, null, new File(GetWorkingPath()));
+		} catch (IOException e) {
 
-		Process p = Runtime.getRuntime().exec(callAndArgs, null, new File(GetWorkingPath()));
+			System.out.println("Error:" + e.getCause().getMessage());
+
+			System.out.println("Use \"which\" to find the full path for this command \"" + callAndArgs[0]
+					+ "\" and use the command with its full path.");
+			System.exit(-1);
+		}
 
 		String st = null;
 		try (BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-			
 
 			while ((st = stdInput.readLine()) != null) {
 
@@ -244,15 +255,13 @@ public class Tool {
 
 			}
 		}
-		
-			try (BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
-				while ((st = stdError.readLine()) != null) {
 
-					// System.out.println("error "+st);
-					ErrorLog += st + "\n";
-				}
+		try (BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+			while ((st = stdError.readLine()) != null) {
+
+				ErrorLog += st + "\n";
 			}
-		
+		}
 
 	}
 
@@ -262,15 +271,14 @@ public class Tool {
 
 		XML xml = new XML();
 		xml.CreateDocument();
-		Element rootElement = xml.getDocument().createElement("Parameters");
+		Element RootElement = xml.getDocument().createElement("Tool");
+		RootElement.setAttribute("Name", this.GetName());
+		Element ParametersElement = xml.getDocument().createElement("Parameters");
 
-		xml.getDocument().appendChild(rootElement);
+		xml.getDocument().appendChild(RootElement);
+		RootElement.appendChild(ParametersElement);
 		for (int i = 0; i < GetNumberOfNeededOptimizeParameters(); i++) {
 			Element ParameterRoot = xml.getDocument().createElement("Parameter");
-
-			// int Used = solution.getVariableValue(i) ;
-			// int
-			// Value=solution.getVariableValue((GetNumberOfNeededOptimizeParameters())+i);
 
 			Element Keyword = xml.getDocument().createElement("Keyword");
 			Element KeywordVlaue = xml.getDocument().createElement("Value");
@@ -279,37 +287,6 @@ public class Tool {
 			Keyword.setTextContent(this.GetNeededOptimizeParameters().get(i).GetKeyword());
 			KeywordVlaue.setTextContent(this.GetNeededOptimizeParameters().get(i).GetValue());
 			IsUsed.setTextContent(String.valueOf(this.GetNeededOptimizeParameters().get(i).IsUsed()));
-
-			/*
-			 * if(Used==0) IsUsed.setTextContent(String.valueOf("False"));
-			 * 
-			 * 
-			 * else IsUsed.setTextContent(String.valueOf("True"));
-			 * 
-			 * 
-			 * Keyword.setTextContent(this.GetNeededOptimizeParameters().get(i).GetKeyword()
-			 * ); if(this.GetNeededOptimizeParameters().get(i).GetValueType()==
-			 * Parameter.ValueType.Number) {
-			 * 
-			 * KeywordVlaue.setTextContent(String.valueOf(Value)); }
-			 * if(this.GetNeededOptimizeParameters().get(i).GetValueType()==
-			 * Parameter.ValueType.String ||
-			 * this.GetNeededOptimizeParameters().get(i).GetValueType()==
-			 * Parameter.ValueType.File ) {
-			 * 
-			 * KeywordVlaue.setTextContent(String.valueOf(this.GetNeededOptimizeParameters()
-			 * .get(i).GetValue())); }
-			 * if(this.GetNeededOptimizeParameters().get(i).GetValueType()==
-			 * Parameter.ValueType.SetOfOptions) {
-			 * 
-			 * if(this.GetNeededOptimizeParameters().get(i).IsCombination()==false)
-			 * KeywordVlaue.setTextContent(String.valueOf(this.GetNeededOptimizeParameters()
-			 * .get(i).GetSetOfOptionsType().GetByIndex(this.GetNeededOptimizeParameters().
-			 * get(i).LengthInIndividual()-1).GetByIndex(Value)));
-			 * 
-			 * 
-			 * }
-			 */
 
 			ParameterRoot.appendChild(Keyword);
 			ParameterRoot.appendChild(KeywordVlaue);
@@ -320,10 +297,23 @@ public class Tool {
 				ParameterRoot.appendChild(SecondKeyword);
 			}
 
-			rootElement.appendChild(ParameterRoot);
+			ParametersElement.appendChild(ParameterRoot);
 
 		}
-		xml.WriteDocument(xml.getDocument(), "ParametersReport.xml");
+		Element ObjElement = xml.getDocument().createElement("Objectives");
+		String objs="";
+		for(int o=0; o < solution.getObjectives().length;++o) {
+			if(objs.length()!=0)objs+=",";
+			objs+=new BigDecimal(solution.getObjectives()[o]).toPlainString();
+		}
+		//ObjElement.setTextContent(Arrays.toString(solution.getObjectives()));
+		ObjElement.setTextContent(objs);
+		RootElement.appendChild(ObjElement);
+		xml.WriteDocument(xml.getDocument(), AlgorithmParameters.BestParametersReport);
+
+		new XML().PopulationToXML(solution, AlgorithmParameters.BestParametersReportEncoded,
+				AlgorithmParameters.MaxEvaluations);// AlgorithmParameters.MaxEvaluations to set the remaining
+													// evaluations in the xml to zero
 
 	}
 }

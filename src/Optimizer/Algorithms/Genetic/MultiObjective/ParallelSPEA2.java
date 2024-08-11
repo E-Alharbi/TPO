@@ -27,10 +27,15 @@ public class ParallelSPEA2 extends Genetic {
 		SolutionListEvaluator<IntegerSolution> evaluator = new MultithreadedSolutionListEvaluator<IntegerSolution>(
 				AlgorithmParameters.numberOfCores, this.Problem);
 
-		algorithm = new SPEA2Builder<>(this.Problem, AlgorithmParameters.Crossover, AlgorithmParameters.Mutation)
-				.setSelectionOperator(AlgorithmParameters.Selection)
-				.setMaxIterations(AlgorithmParameters.MaxEvaluations)
-				.setPopulationSize(AlgorithmParameters.PopulationSize).setK(AlgorithmParameters.K)
-				.setSolutionListEvaluator(evaluator).build();
+		SPEA2Builder<IntegerSolution> builder = new SPEA2Builder<>(this.Problem, AlgorithmParameters.Crossover,
+				AlgorithmParameters.Mutation).setSelectionOperator(AlgorithmParameters.Selection)
+						.setMaxIterations(AlgorithmParameters.getMaxEvaluations(algorithm))
+						.setPopulationSize(AlgorithmParameters.PopulationSize).setK(AlgorithmParameters.K)
+						.setSolutionListEvaluator(evaluator);
+
+		algorithm = builder.build();
+		if (builder.getMaxIterations() == Integer.MAX_VALUE)
+			init(Problem);
+
 	}
 }

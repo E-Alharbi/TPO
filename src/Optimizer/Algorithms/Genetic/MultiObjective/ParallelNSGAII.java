@@ -19,15 +19,21 @@ public class ParallelNSGAII extends Genetic {
 	}
 
 	public void init(IntegerProblem Problem) {
+
 		SolutionListEvaluator<IntegerSolution> evaluator = new MultithreadedSolutionListEvaluator<IntegerSolution>(
 				AlgorithmParameters.numberOfCores, this.Problem);
 
 		NSGAIIBuilder<IntegerSolution> builder = new NSGAIIBuilder<IntegerSolution>(this.Problem,
 				AlgorithmParameters.Crossover, AlgorithmParameters.Mutation, AlgorithmParameters.PopulationSize)
 						.setSelectionOperator(AlgorithmParameters.Selection)
-						.setMaxEvaluations(AlgorithmParameters.MaxEvaluations).setSolutionListEvaluator(evaluator);
+						.setMaxEvaluations(AlgorithmParameters.getMaxEvaluations(algorithm))
+						.setSolutionListEvaluator(evaluator);
 
 		algorithm = builder.build();
+
+		if (builder.getMaxIterations() == Integer.MAX_VALUE)
+			init(Problem);
+
 	}
 
 	public ParallelNSGAII() {

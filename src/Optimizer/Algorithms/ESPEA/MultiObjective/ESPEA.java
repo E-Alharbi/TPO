@@ -23,10 +23,13 @@ public class ESPEA extends OptimizationAlgorithm {
 	public void init(IntegerProblem Problem) {
 		ESPEABuilder<IntegerSolution> builder = new ESPEABuilder<>(Problem, AlgorithmParameters.Crossover,
 				AlgorithmParameters.Mutation);
-		builder.setMaxEvaluations(AlgorithmParameters.MaxEvaluations);
+		builder.setMaxEvaluations(AlgorithmParameters.getMaxEvaluations(algorithm));
 		builder.setPopulationSize(AlgorithmParameters.PopulationSize);
 		builder.setReplacementStrategy(ReplacementStrategy.WORST_IN_ARCHIVE);
 
 		algorithm = builder.build();
+
+		if (builder.getMaxEvaluations() == Integer.MAX_VALUE)
+			init(Problem);
 	}
 }

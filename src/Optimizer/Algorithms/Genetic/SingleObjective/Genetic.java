@@ -48,7 +48,7 @@ public abstract class Genetic extends OptimizationAlgorithm {
 		rootElement.appendChild(element);
 
 		element = xml.getDocument().createElement("MaxEvaluations");
-		element.setTextContent(String.valueOf(AlgorithmParameters.MaxEvaluations));
+		element.setTextContent(String.valueOf(AlgorithmParameters.getMaxEvaluations(this.algorithm)));
 		rootElement.appendChild(element);
 
 		element = xml.getDocument().createElement("Selection");

@@ -17,6 +17,7 @@ public class PropertiesReader {
 		// app.printThemAll();
 
 		HashMap<String, String> H = new PropertiesReader().Read("config.properties");
+		System.out.println(H);
 		new PropertiesSetter().Set(H);
 
 	}

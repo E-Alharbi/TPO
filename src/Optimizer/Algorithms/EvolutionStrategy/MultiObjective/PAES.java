@@ -21,8 +21,15 @@ public class PAES extends Evolution {
 	}
 
 	public void init(IntegerProblem Problem) {
-		algorithm = new PAESBuilder<IntegerSolution>(this.Problem).setMutationOperator(AlgorithmParameters.Mutation)
-				.setMaxEvaluations(AlgorithmParameters.MaxEvaluations).setArchiveSize(AlgorithmParameters.archiveSize)
-				.setBiSections(AlgorithmParameters.BiSections).build();
+
+		PAESBuilder<IntegerSolution> builder = new PAESBuilder<IntegerSolution>(this.Problem)
+				.setMutationOperator(AlgorithmParameters.Mutation)
+				.setMaxEvaluations(AlgorithmParameters.getMaxEvaluations(algorithm))
+				.setArchiveSize(AlgorithmParameters.archiveSize).setBiSections(AlgorithmParameters.BiSections);
+
+		algorithm = builder.build();
+
+		if (builder.getMaxEvaluations() == Integer.MAX_VALUE)
+			init(Problem);
 	}
 }

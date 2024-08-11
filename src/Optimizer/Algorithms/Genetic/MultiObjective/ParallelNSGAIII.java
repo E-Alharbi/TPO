@@ -19,15 +19,20 @@ public class ParallelNSGAIII extends Genetic {
 
 	public ParallelNSGAIII() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public void init(IntegerProblem Problem) {
 		SolutionListEvaluator<IntegerSolution> evaluator = new MultithreadedSolutionListEvaluator<IntegerSolution>(
 				AlgorithmParameters.numberOfCores, this.Problem);
 
-		algorithm = new NSGAIIIBuilder<>(this.Problem).setCrossoverOperator(AlgorithmParameters.Crossover)
-				.setMutationOperator(AlgorithmParameters.Mutation).setSelectionOperator(AlgorithmParameters.Selection)
-				.setMaxIterations(AlgorithmParameters.MaxEvaluations).setSolutionListEvaluator(evaluator).build();
+		NSGAIIIBuilder<IntegerSolution> builder = new NSGAIIIBuilder<>(this.Problem)
+				.setCrossoverOperator(AlgorithmParameters.Crossover).setMutationOperator(AlgorithmParameters.Mutation)
+				.setSelectionOperator(AlgorithmParameters.Selection)
+				.setMaxIterations(AlgorithmParameters.getMaxEvaluations(algorithm)).setSolutionListEvaluator(evaluator);
+
+		algorithm = builder.build();
+		if (builder.getMaxIterations() == Integer.MAX_VALUE)
+			init(Problem);
 	}
 }

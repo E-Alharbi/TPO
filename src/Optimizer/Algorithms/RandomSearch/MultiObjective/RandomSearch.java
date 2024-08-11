@@ -16,11 +16,16 @@ public class RandomSearch extends OptimizationAlgorithm {
 
 	public RandomSearch() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public void init(IntegerProblem Problem) {
-		algorithm = new RandomSearchBuilder<IntegerSolution>(this.Problem)
-				.setMaxEvaluations(AlgorithmParameters.MaxEvaluations).build();
+		RandomSearchBuilder<IntegerSolution> builder = new RandomSearchBuilder<IntegerSolution>(this.Problem)
+				.setMaxEvaluations(AlgorithmParameters.getMaxEvaluations(algorithm));
+
+		algorithm = builder.build();
+		if (builder.getMaxEvaluations() == Integer.MAX_VALUE)
+			init(Problem);
 	}
+
 }

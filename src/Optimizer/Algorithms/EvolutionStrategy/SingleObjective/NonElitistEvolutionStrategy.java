@@ -20,11 +20,15 @@ public class NonElitistEvolutionStrategy extends Evolution {
 	}
 
 	public void init(IntegerProblem Problem) {
-		algorithm = new EvolutionStrategyBuilder<IntegerSolution>(this.Problem, AlgorithmParameters.Mutation,
-				EvolutionStrategyBuilder.EvolutionStrategyVariant.NON_ELITIST)
-						.setMaxEvaluations(AlgorithmParameters.MaxEvaluations)
+		EvolutionStrategyBuilder<IntegerSolution> builder = new EvolutionStrategyBuilder<IntegerSolution>(this.Problem,
+				AlgorithmParameters.Mutation, EvolutionStrategyBuilder.EvolutionStrategyVariant.NON_ELITIST)
+						.setMaxEvaluations(AlgorithmParameters.getMaxEvaluations(algorithm))
 						.setMu(AlgorithmParameters.EvolutionStrategyMu)
-						.setLambda(AlgorithmParameters.EvolutionStrategyLambda).build();
+						.setLambda(AlgorithmParameters.EvolutionStrategyLambda);
+
+		algorithm = builder.build();
+		if (builder.getMaxEvaluations() == Integer.MAX_VALUE)
+			init(Problem);
 	}
 
 }

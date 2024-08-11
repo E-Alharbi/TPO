@@ -27,10 +27,16 @@ public class SMSEMOA extends Genetic {
 		Hypervolume<IntegerSolution> hypervolume;
 		hypervolume = new PISAHypervolume<>();
 		hypervolume.setOffset(AlgorithmParameters.hypervolume);
-		algorithm = new SMSEMOABuilder<IntegerSolution>(this.Problem, AlgorithmParameters.Crossover,
-				AlgorithmParameters.Mutation).setSelectionOperator(AlgorithmParameters.Selection)
-						.setMaxEvaluations(AlgorithmParameters.MaxEvaluations)
-						.setPopulationSize(AlgorithmParameters.PopulationSize).setHypervolumeImplementation(hypervolume)
-						.build();
+		SMSEMOABuilder<IntegerSolution> builder = new SMSEMOABuilder<IntegerSolution>(this.Problem,
+				AlgorithmParameters.Crossover, AlgorithmParameters.Mutation)
+						.setSelectionOperator(AlgorithmParameters.Selection)
+						.setMaxEvaluations(AlgorithmParameters.getMaxEvaluations(algorithm))
+						.setPopulationSize(AlgorithmParameters.PopulationSize)
+						.setHypervolumeImplementation(hypervolume);
+
+		algorithm = builder.build();
+
+		if (builder.getMaxEvaluations() == Integer.MAX_VALUE)
+			init(Problem);
 	}
 }

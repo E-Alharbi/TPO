@@ -92,14 +92,14 @@ public class Parameter {
 					"Warring: You use mutiple item groups and you set Combination to false. Only first item group will be used and the rest will be ignored");
 		}
 	}
-	public Parameter(String keyword, String value, String SecondKeyword, ParameterType Parametertype, ValueType type, OptionsSet optionsset,
-			boolean Optimize, boolean Combination) {
-		this(keyword, value, Parametertype, type, optionsset,Optimize,Combination);
-this.SecondKeyword=SecondKeyword;
-		
+
+	public Parameter(String keyword, String value, String SecondKeyword, ParameterType Parametertype, ValueType type,
+			OptionsSet optionsset, boolean Optimize, boolean Combination) {
+		this(keyword, value, Parametertype, type, optionsset, Optimize, Combination);
+		this.SecondKeyword = SecondKeyword;
+
 	}
-	
-	
+
 	public Parameter(String keyword, String value, ParameterType Parametertype, ValueType type,
 			int LowerLimitforNumberType, int UpperLimitforNumberType, boolean Optimize) {
 		this(keyword, value, Parametertype, type, Optimize);
@@ -204,7 +204,7 @@ this.SecondKeyword=SecondKeyword;
 			if (GetValue().length() != 0)
 				ParameterInArray.add(GetValue());
 		} else {
-			// System.out.println(toString());
+			
 			if (GetValue().length() != 0)
 				ParameterInArray.add(GetValue());
 		}

@@ -39,6 +39,7 @@ public class CoralReefs extends OptimizationAlgorithm {
 						.setFa(AlgorithmParameters.CoralReefsFa).setPd(AlgorithmParameters.CoralReefsPd)
 						.setAttemptsToSettle(AlgorithmParameters.CoralReefsttemptsToSettle)
 						.setComparator(new ObjectiveComparator<IntegerSolution>(0)).build();
+
 	}
 
 	public CoralReefs() {
@@ -66,9 +67,9 @@ public class CoralReefs extends OptimizationAlgorithm {
 				.setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
 				.setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv")).print();
 
-		JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
-		JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
-		JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+		//JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
+		//JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
+		//JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
 
 		return population;
 	}

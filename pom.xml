@@ -113,7 +113,7 @@
     </plugins>
   </build>
     <dependencies>
-       
+      
        <dependency>
                    <groupId>org.uma.jmetal</groupId>
                    <artifactId>jmetal-core</artifactId>
@@ -140,7 +140,9 @@
                    <artifactId>jmetal-exec</artifactId>
                    <version>5.7</version>
                </dependency>
-               <dependency>
+              
+
+ <dependency>
                    <groupId>org.reflections</groupId>
                    <artifactId>reflections</artifactId>
                    <version>0.9.11</version>
@@ -151,7 +153,10 @@
                    <version>2.7</version>
 
                </dependency>
+               <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 
+
+               
                <dependency>
                    <groupId>org.biojava</groupId>
                    <artifactId>biojava-core</artifactId>
@@ -171,6 +176,25 @@
                    <artifactId>json-simple</artifactId>
                    <version>1.1.1</version>
                </dependency>
+
+<dependency>
+      <groupId>me.tongfei</groupId>
+      <artifactId>progressbar</artifactId>
+      <version>0.10.0</version>
+  </dependency>
+
+<!-- https://mvnrepository.com/artifact/org.jline/jline -->
+
+
+<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+<dependency>
+    <groupId>org.jsoup</groupId>
+    <artifactId>jsoup</artifactId>
+    <version>1.16.2</version>
+</dependency>
+
+
+
 
 
     </dependencies>

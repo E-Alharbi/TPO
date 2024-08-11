@@ -1,9 +1,4 @@
-[![Build Status](https://travis-ci.com/E-Alharbi/TPO.svg?token=z92wc12inrqPgG6Faxv2&branch=master)](https://travis-ci.com/E-Alharbi/TPO)
-
-
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/E-Alharbi/TPO.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/E-Alharbi/TPO/alerts/)
-
-[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/E-Alharbi/TPO.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/E-Alharbi/TPO/context:java)
+[![Build Status](https://travis-ci.com/E-Alharbi/TPO.svg?token=z92wc12inrqPgG6Faxv2&branch=master)](https://travis-ci.com/E-Alharbi/TPO) [![Total alerts](https://img.shields.io/lgtm/alerts/g/E-Alharbi/TPO.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/E-Alharbi/TPO/alerts/) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/E-Alharbi/TPO.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/E-Alharbi/TPO/context:java)
 
 # Welcome to Tool Parameters Optimizer(TPO) documentation
 Tool Parameters Optimizer(TPO) is a tool for optimizing any tool’s parameters that can run from command line.
@@ -530,5 +525,15 @@ If you want to save a log file produced by the tool that you want to optimise, `
      out.SaveLog();
 ```
 
-
+## Citing
+```
+@software{TPO,
+  author = {Alharbi,Emad},
+  doi = {},
+  month = {03},
+  title = {{TPO: A tool for optimizing a tool's parameters}},
+  url = {https://github.com/E-Alharbi/TPO},
+  year = {2022}
+}
+```
     

@@ -27,11 +27,16 @@ public class ParallelMOCell extends Genetic {
 		SolutionListEvaluator<IntegerSolution> evaluator = new MultithreadedSolutionListEvaluator<IntegerSolution>(
 				AlgorithmParameters.numberOfCores, this.Problem);
 
-		algorithm = new MOCellBuilder<IntegerSolution>(Problem, AlgorithmParameters.Crossover,
-				AlgorithmParameters.Mutation).setSelectionOperator(AlgorithmParameters.Selection)
-						.setMaxEvaluations(AlgorithmParameters.MaxEvaluations)
+		MOCellBuilder<IntegerSolution> builder = new MOCellBuilder<IntegerSolution>(Problem,
+				AlgorithmParameters.Crossover, AlgorithmParameters.Mutation)
+						.setSelectionOperator(AlgorithmParameters.Selection)
+						.setMaxEvaluations(AlgorithmParameters.getMaxEvaluations(algorithm))
 						.setPopulationSize(AlgorithmParameters.PopulationSize)
 						.setArchive(new CrowdingDistanceArchive<IntegerSolution>(AlgorithmParameters.archiveSize))
-						.setSolutionListEvaluator(evaluator).build();
+						.setSolutionListEvaluator(evaluator);
+
+		algorithm = builder.build();
+		if (builder.getMaxEvaluations() == Integer.MAX_VALUE)
+			init(Problem);
 	}
 }

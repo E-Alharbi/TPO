@@ -44,7 +44,7 @@ public abstract class Evolution extends OptimizationAlgorithm {
 		rootElement.appendChild(element);
 
 		element = xml.getDocument().createElement("MaxEvaluations");
-		element.setTextContent(String.valueOf(AlgorithmParameters.MaxEvaluations));
+		element.setTextContent(String.valueOf(AlgorithmParameters.getMaxEvaluations(this.algorithm)));
 		rootElement.appendChild(element);
 
 		element = xml.getDocument().createElement("Mu");
@@ -57,11 +57,10 @@ public abstract class Evolution extends OptimizationAlgorithm {
 
 		element = xml.getDocument().createElement("Mutation");
 		// element.setTextContent(String.valueOf(GAB.getMutationOperator().toString()));
-		// System.out.println(GAB.getMutationOperator().toString());
 		element.setAttribute("name", String.valueOf(AlgorithmParameters.Mutation.toString()));
 		// Class<? extends CrossoverOperator> cl =
 		// GAB.getCrossoverOperator().getClass();
-		System.out.println(AlgorithmParameters.Mutation);
+
 		AddingGetter(AlgorithmParameters.Mutation.getClass().getMethods(), element, AlgorithmParameters.Mutation,
 				xml.getDocument());
 		rootElement.appendChild(element);

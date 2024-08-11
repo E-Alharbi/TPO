@@ -17,15 +17,20 @@ public class SteadyStateGA extends Genetic {
 
 	public SteadyStateGA() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public void init(IntegerProblem Problem) {
-		algorithm = new GeneticAlgorithmBuilder<IntegerSolution>(this.Problem, AlgorithmParameters.Crossover,
-				AlgorithmParameters.Mutation).setPopulationSize(AlgorithmParameters.PopulationSize)
-						.setMaxEvaluations(AlgorithmParameters.MaxEvaluations)
+		GeneticAlgorithmBuilder<IntegerSolution> builder = new GeneticAlgorithmBuilder<IntegerSolution>(this.Problem,
+				AlgorithmParameters.Crossover, AlgorithmParameters.Mutation)
+						.setPopulationSize(AlgorithmParameters.PopulationSize)
+						.setMaxEvaluations(AlgorithmParameters.getMaxEvaluations(algorithm))
 						.setSelectionOperator(AlgorithmParameters.Selection)
-						.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE).build();
+						.setVariant(GeneticAlgorithmBuilder.GeneticAlgorithmVariant.STEADY_STATE);
+
+		algorithm = builder.build();
+		if (builder.getMaxEvaluations() == Integer.MAX_VALUE)
+			init(Problem);
 	}
 
 }
