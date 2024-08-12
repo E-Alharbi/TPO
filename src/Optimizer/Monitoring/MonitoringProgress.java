@@ -56,8 +56,8 @@ public class MonitoringProgress {
 
 					}
 				} catch (Exception e) {
-					//System.out.println("Exception ");
-					//e.printStackTrace();
+					// System.out.println("Exception ");
+					// e.printStackTrace();
 				}
 
 			}

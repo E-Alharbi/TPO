@@ -86,7 +86,6 @@ public class Monitoring {
 
 	public void monitor() {
 
-		
 		t.scheduleAtFixedRate(new TimerTask() {
 
 			public void run() {
@@ -101,13 +100,13 @@ public class Monitoring {
 					e1.printStackTrace();
 				}
 
-				boolean found_evaluations_var=false;
+				boolean found_evaluations_var = false;
 				for (Field m : algorithm.getClass().getDeclaredFields()) {
-					
+
 					if (m.getName().equals("evaluations")) {
-						found_evaluations_var=true;
+						found_evaluations_var = true;
 						try {
-						
+
 							m.setAccessible(true);
 							evaluations = m.getInt(algorithm);
 							MonitoringProgress.ProgressStatus.put(algorithm, evaluations);
@@ -118,8 +117,9 @@ public class Monitoring {
 						}
 					}
 				}
-				if(found_evaluations_var==false) {
-					System.out.println(algorithm.getName()+" can not be monitored and the algorithm run status cannot be saved. However, the algorithm is running!");
+				if (found_evaluations_var == false) {
+					System.out.println(algorithm.getName()
+							+ " can not be monitored and the algorithm run status cannot be saved. However, the algorithm is running!");
 					MonitorStop();
 				}
 
@@ -166,12 +166,14 @@ public class Monitoring {
 		if (Population == null)
 			return;
 		SaveAlgorithmStatus(Population);
-	
-		//	new XML().PopulationToXML(Population, AlgorithmParameters.ResumeDir + "/" + AlgorithmStatusName, evaluations);
+
+		// new XML().PopulationToXML(Population, AlgorithmParameters.ResumeDir + "/" +
+		// AlgorithmStatusName, evaluations);
 
 	}
-	
-	public void SaveAlgorithmStatus(List<IntegerSolution> Population) throws ParserConfigurationException, TransformerException {
+
+	public void SaveAlgorithmStatus(List<IntegerSolution> Population)
+			throws ParserConfigurationException, TransformerException {
 		new XML().PopulationToXML(Population, AlgorithmParameters.ResumeDir + "/" + AlgorithmStatusName, evaluations);
 
 	}

@@ -167,7 +167,6 @@ public abstract class OptimizationAlgorithm {
 			e.printStackTrace();
 		}
 
-
 		return build.getReturnType().getSimpleName();
 	}
 

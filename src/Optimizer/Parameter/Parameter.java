@@ -204,7 +204,7 @@ public class Parameter {
 			if (GetValue().length() != 0)
 				ParameterInArray.add(GetValue());
 		} else {
-			
+
 			if (GetValue().length() != 0)
 				ParameterInArray.add(GetValue());
 		}

@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -301,12 +300,13 @@ public class Tool {
 
 		}
 		Element ObjElement = xml.getDocument().createElement("Objectives");
-		String objs="";
-		for(int o=0; o < solution.getObjectives().length;++o) {
-			if(objs.length()!=0)objs+=",";
-			objs+=new BigDecimal(solution.getObjectives()[o]).toPlainString();
+		String objs = "";
+		for (int o = 0; o < solution.getObjectives().length; ++o) {
+			if (objs.length() != 0)
+				objs += ",";
+			objs += new BigDecimal(solution.getObjectives()[o]).toPlainString();
 		}
-		//ObjElement.setTextContent(Arrays.toString(solution.getObjectives()));
+		// ObjElement.setTextContent(Arrays.toString(solution.getObjectives()));
 		ObjElement.setTextContent(objs);
 		RootElement.appendChild(ObjElement);
 		xml.WriteDocument(xml.getDocument(), AlgorithmParameters.BestParametersReport);

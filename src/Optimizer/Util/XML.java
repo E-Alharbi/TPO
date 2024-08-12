@@ -35,6 +35,7 @@ import Optimizer.Parameter.AlgorithmParameters;
 public class XML {
 	Document document;
 	private int count_call;
+
 	public Document getDocument() {
 		return document;
 	}
@@ -89,7 +90,6 @@ public class XML {
 		// File AlgorithmStatusFile = new File(FileName);
 		Vector<IntegerSolution> Population = new Vector<IntegerSolution>();
 
-		
 		Document doc = ParseXML(AlgorithmStatusFile);
 
 		NodeList list = doc.getChildNodes().item(0).getChildNodes();
@@ -120,17 +120,15 @@ public class XML {
 					}
 				}
 
-				
 				Population.add(sol);
 			}
 
 		}
-		
+
 		if (SetEvaluations)
 			AlgorithmParameters.setMaxEvaluations(AlgorithmStatusFile.getName(),
 					Integer.valueOf(doc.getElementsByTagName("RemainingEvaluations").item(0).getTextContent()));
-		
-		
+
 		return Population;
 	}
 
@@ -143,7 +141,7 @@ public class XML {
 
 	public synchronized void PopulationToXML(List<IntegerSolution> Population, String FileName, int Evaluations)
 			throws ParserConfigurationException, TransformerException {
-		
+
 		XML xml = new XML();
 		xml.CreateDocument();
 
@@ -164,8 +162,11 @@ public class XML {
 			Element Objectives = xml.getDocument().createElement("Objectives");
 			for (int o = 0; o < Population.get(i).getObjectives().length; ++o) {
 				Element Obj = xml.getDocument().createElement("Objective");
-				
-				Obj.setTextContent(new BigDecimal(Population.get(i).getObjectives()[o]).toPlainString()); //BigDecimal to avoid scientific notation
+
+				Obj.setTextContent(new BigDecimal(Population.get(i).getObjectives()[o]).toPlainString()); // BigDecimal
+																											// to avoid
+																											// scientific
+																											// notation
 				Objectives.appendChild(Obj);
 			}
 			individual.appendChild(Objectives);
@@ -226,15 +227,14 @@ public class XML {
 				Integer.valueOf(list.item(3).getTextContent()));
 	}
 
-	
 	Document ParseXML(File xml) throws ParserConfigurationException {
-		
-		if(count_call==5) {
-			System.out.println("We tried 5 times to read this file "+xml.getAbsolutePath()+", but we fail!");
-			System.out.println("You may clean "+AlgorithmParameters.ResumeDir+" and start a new run");
+
+		if (count_call == 5) {
+			System.out.println("We tried 5 times to read this file " + xml.getAbsolutePath() + ", but we fail!");
+			System.out.println("You may clean " + AlgorithmParameters.ResumeDir + " and start a new run");
 			System.exit(-1);
 		}
-		
+
 		// Instantiate the Factory
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -250,7 +250,7 @@ public class XML {
 		} catch (SAXException e) {
 
 			e.printStackTrace();
-			
+
 			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (InterruptedException e1) {
@@ -262,7 +262,7 @@ public class XML {
 		} catch (IOException e) {
 
 			e.printStackTrace();
-			
+
 		}
 		return doc;
 	}

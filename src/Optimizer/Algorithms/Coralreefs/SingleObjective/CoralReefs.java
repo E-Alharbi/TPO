@@ -12,7 +12,6 @@ import org.uma.jmetal.algorithm.singleobjective.coralreefsoptimization.CoralReef
 import org.uma.jmetal.problem.IntegerProblem;
 import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.util.AlgorithmRunner;
-import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.comparator.ObjectiveComparator;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
@@ -67,9 +66,11 @@ public class CoralReefs extends OptimizationAlgorithm {
 				.setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
 				.setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv")).print();
 
-		//JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
-		//JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
-		//JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+		// JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
+		// JMetalLogger.logger.info("Objectives values have been written to file
+		// FUN.tsv");
+		// JMetalLogger.logger.info("Variables values have been written to file
+		// VAR.tsv");
 
 		return population;
 	}

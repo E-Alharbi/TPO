@@ -14,7 +14,7 @@ public class Executor extends org.uma.jmetal.util.AlgorithmRunner.Executor {
 
 	@Override
 	public org.uma.jmetal.util.AlgorithmRunner execute() {
-		
+
 		Thread thread = new Thread(algorithm);
 		thread.setName(algorithm.getName());
 		thread.start();

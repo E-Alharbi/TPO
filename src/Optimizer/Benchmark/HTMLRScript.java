@@ -11,10 +11,10 @@ import Optimizer.Util.Txt;
 
 public class HTMLRScript {
 
-	// Remove HTML tags 
+	// Remove HTML tags
 	public static void main(String[] args) throws IOException {
 
-		// Path to R script test functions in HTML format 
+		// Path to R script test functions in HTML format
 		File[] HtmlPages = new File("RscriptTestfunctionsHTML").listFiles();
 
 		for (File html : HtmlPages) {

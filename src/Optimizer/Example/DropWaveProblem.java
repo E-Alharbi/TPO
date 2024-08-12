@@ -22,7 +22,6 @@ public class DropWaveProblem extends Problem {
 	@Override
 	public void evaluate(IntegerSolution solution) {
 
-		
 		Tool DropWave = new Tool(this.tool);
 
 		DropWave.SetParametersValueBasedOnOptimizationAlgorithm(solution);
@@ -36,7 +35,6 @@ public class DropWaveProblem extends Problem {
 			e.printStackTrace();
 		}
 
-		
 		solution.setObjective(0, Double.valueOf(DropWave.GetLog()));
 
 	}

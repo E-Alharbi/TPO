@@ -24,7 +24,6 @@ public class SimpleExampleProblem extends Problem {
 	public void evaluate(IntegerSolution solution) {
 		// TODO Auto-generated method stub
 
-		
 		Tool SimpleExample = new Tool(this.tool);
 		// SimpleExample.ClearLog();
 

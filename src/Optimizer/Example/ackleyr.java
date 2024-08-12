@@ -34,7 +34,6 @@ public class ackleyr extends Problem {
 			e.printStackTrace();
 		}
 
-		
 		solution.setObjective(0, Double.valueOf(ackleyr.GetLog().trim()));
 
 	}

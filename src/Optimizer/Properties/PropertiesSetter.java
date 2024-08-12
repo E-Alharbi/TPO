@@ -12,8 +12,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.Operator;
@@ -25,9 +23,10 @@ import Optimizer.Parameter.AlgorithmParameters;
 
 public class PropertiesSetter {
 	public static void main(String[] args) throws NoSuchFieldException, SecurityException, IllegalArgumentException,
-	IllegalAccessException, InstantiationException, InvocationTargetException {
-	System.out.println(new PropertiesSetter().SetAlgorithm("ParallelNSGAII"));
+			IllegalAccessException, InstantiationException, InvocationTargetException {
+		System.out.println(new PropertiesSetter().SetAlgorithm("ParallelNSGAII"));
 	}
+
 	public void Set(HashMap<String, String> PropertiesValues) throws NoSuchFieldException, SecurityException,
 			IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException {
 
@@ -62,21 +61,22 @@ public class PropertiesSetter {
 	}
 
 	boolean SetAlgorithm(String value) throws InstantiationException, IllegalAccessException {
-		
+
 		System.out.println("SetAlgorithm ");
-		System.out.println("value:"+value);
+		System.out.println("value:" + value);
 		// Reflections reflections = new Reflections("Optimizer.Algorithms");
 
 		// Set<Class<? extends OptimizationAlgorithm>> modules = reflections
 		// .getSubTypesOf(Optimizer.Algorithms.OptimizationAlgorithm.class);
 		Set<Class<? extends OptimizationAlgorithm>> modules = AlgorithmsList();
-		System.out.println("AlgorithmsList(): "+AlgorithmsList().size());
+		System.out.println("AlgorithmsList(): " + AlgorithmsList().size());
 		for (Iterator<Class<? extends OptimizationAlgorithm>> it = modules.iterator(); it.hasNext();) {
 			Class<? extends OptimizationAlgorithm> f = it.next();
-			//System.out.println("SimpleName "+f.getSimpleName());
-			//System.out.println(Modifier.isAbstract( f.getModifiers() ));
+			// System.out.println("SimpleName "+f.getSimpleName());
+			// System.out.println(Modifier.isAbstract( f.getModifiers() ));
 
-			if (value.equals(f.getSimpleName()) && Modifier.isAbstract( f.getModifiers() )==false) {// not an abstract class
+			if (value.equals(f.getSimpleName()) && Modifier.isAbstract(f.getModifiers()) == false) {// not an abstract
+																									// class
 				AlgorithmParameters.algorithm = f.newInstance();
 
 				return true;
@@ -88,8 +88,7 @@ public class PropertiesSetter {
 
 	public Set<Class<? extends OptimizationAlgorithm>> AlgorithmsList() {
 		Reflections reflections = new Reflections("Optimizer.Algorithms");
-		
-		
+
 		Set<Class<? extends OptimizationAlgorithm>> modules = reflections
 				.getSubTypesOf(Optimizer.Algorithms.OptimizationAlgorithm.class);
 		return modules;

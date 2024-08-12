@@ -39,7 +39,7 @@ public abstract class Problem extends AbstractIntegerProblem {
 			upperLimit.add(tool.GetNeededOptimizeParameters().get(i).GetUpperBoundParameterType());
 
 		}
-		
+
 		int Parameter = 0;
 		for (int i = 0; i < tool.GetNumberOfNeededOptimizeParameters(); i++) {
 
@@ -52,7 +52,7 @@ public abstract class Problem extends AbstractIntegerProblem {
 			++Parameter;
 
 		}
-	
+
 		setLowerLimit(lowerLimit);
 		setUpperLimit(upperLimit);
 		this.tool = tool;
@@ -61,7 +61,7 @@ public abstract class Problem extends AbstractIntegerProblem {
 
 		try {
 			ResumePopulation = new Util().ResumeAlgorithmRun(this);
-			
+
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException | ParserConfigurationException | SAXException | IOException e) {
 			// TODO Auto-generated catch block
@@ -95,7 +95,7 @@ public abstract class Problem extends AbstractIntegerProblem {
 	public synchronized IntegerSolution createSolution() {
 
 		String ThName = Thread.currentThread().getName();
-		
+
 		if (ResumePopulation.containsKey(ThName) && ResumePopulation.get(ThName).size() != 0) {
 			return ResumePopulation.get(ThName).remove(0);
 		}

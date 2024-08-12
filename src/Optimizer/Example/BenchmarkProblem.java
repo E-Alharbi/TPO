@@ -35,7 +35,6 @@ public class BenchmarkProblem extends Problem {
 			e.printStackTrace();
 		}
 
-		
 		solution.setObjective(0, Double.valueOf(tool.GetLog()));
 
 	}
