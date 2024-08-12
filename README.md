@@ -1,7 +1,5 @@
-[![Build Status](https://travis-ci.com/E-Alharbi/TPO.svg?token=z92wc12inrqPgG6Faxv2&branch=master)](https://travis-ci.com/E-Alharbi/TPO) [![Total alerts](https://img.shields.io/lgtm/alerts/g/E-Alharbi/TPO.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/E-Alharbi/TPO/alerts/) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/E-Alharbi/TPO.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/E-Alharbi/TPO/context:java)
-
 # Welcome to Tool Parameters Optimizer(TPO) documentation
-Tool Parameters Optimizer(TPO) is a tool for optimizing any tool’s parameters that can run from command line.
+Tool Parameters Optimiser (TPO) is a tool for optimising any tool’s parameters that can run from the command line.
 
 ## Installation
 
@@ -11,7 +9,7 @@ TPO can be downloaded from GitHub
 https://github.com/E-Alharbi/TPO
 ```
 
-Also, it is available in Maven repository
+Also, it is available in the Maven repository (V2.0 is not available yet in the Maven repository)
 
 ```xml
   <!-- https://mvnrepository.com/artifact/com.github.e-alharbi/Tool-Parameters-Optimizer -->
@@ -27,18 +25,18 @@ Also, it is available in Maven repository
 
 The document  contains the following  
 1. Simple example
-	* Single objective optimization
-    * Multi-objective optimization
+	* Single objective optimisation
+    * Multi-objective optimisation
 
 
 2. Advanced example
     * Single objective optimisation
 
 
-3. Optimization algorithms
+3. Optimisation algorithms
 
 
-4. Configuration of optimization algorithms
+4. Configuration of optimisation algorithms
 
 
 5. Parameters
@@ -48,274 +46,239 @@ The document  contains the following
 
 6. Output of optimised tool
     * Search for files
-    * Save log file
+    * Save the log file
 
     
 ## 1. Simple example
 
-### Single objective optimization
+### Single objective optimisation
 
-Let assume we have a tool that fills in an array with ones. The tool runs from the command line and takes two parameters: the array start index and end index. Our objective is to fill in all elements in the array with ones. For example, if the array size is 100, then the two parameters should be 0 and 100.
-
-The tool code:
+The Drop-Wave function is used to test optimisation frameworks and has two optimisation parameters. Its optimal objective is -1 at 0 and 0 for the two parameters. The following is an implementation of this function in Java.
 
 ```java
  public static void main(String[] args) {
-
-
-             int[] num = new int [100];
-             int StartIndex=Integer.valueOf(args[0]);
-             int EndIndex=Integer.valueOf(args[1]);
-             for(int i=StartIndex ; i < EndIndex ; ++i) {
-                     num[i]=1;
-             }
-             //Check if all elements are ones
-
-             int CountOnes=0;
-             for(int i=0 ; i < num.length ; ++i) {
-                     if(num[i]==1)
-                             CountOnes++;
-             }
-             System.out.println(CountOnes);
-
+        double x1=Double.valueOf(args[0]);
+		double x2=Double.valueOf(args[1]);
+		double frac1=1+Math.cos(12*Math.sqrt(Math.pow(x1,2)+Math.pow(x2,2)));
+		double frac2=0.5* (Math.pow(x1,2)+Math.pow(x2,2))+2;
+		System.out.println(-frac1/frac2);
      }
 ```
 
-Copy the above code in a java project and export a runnable jar file.
+A runnable jar of this function is in [/Optimizer/Tester/DROPWAVEFUNCTION.jar](https://github.com/E-Alharbi/TPO/blob/master/src/Optimizer/Tester/DROPWAVEFUNCTION.jar).
 
 The tool can be run from the command line using this command.
 
 ```sh 
-java -jar SimpleExample.jar 0 50
+java -jar DROPWAVEFUNCTION.jar 2 3
 ```
 
-Now, let use TPO to optimize these parameters.
+Now, let's use TPO to optimise these parameters.
 
-In a new java project, copy the following code.
+We need to implement your solution evaluator. In TPO, this is made easy by only extending the Abstract class Problem. See the example below. 
+```java
+public class DropWaveProblem extends Problem {
+	private static final long serialVersionUID = 1L;
+	public DropWaveProblem(Tool tool) {
+		super(tool);
+	}
+	@Override
+	public void evaluate(IntegerSolution solution) {
+		Tool DropWave = new Tool(this.tool);
+		DropWave.SetParametersValueBasedOnOptimizationAlgorithm(solution);
+		DropWave.SetNoWorkingPath(true);
+		try {
+			DropWave.Run();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		solution.setObjective(0, Double.valueOf(DropWave.GetLog()));
+	}
+}
+```
+
+In the evaluate function, you need to place the first few lines. 
+
+1- Define your tool as the following:
+```java
+	Tool DropWave = new Tool(this.tool);
+```
+
+2- Decode the solution to actual parameter values.
+```java
+		DropWave.SetParametersValueBasedOnOptimizationAlgorithm(solution);
+```
+
+3- Run your tool to get the output using newly suggested parameter values. 
+```java
+		try {
+			DropWave.Run();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+```
+
+3- Get your tool output and send it back to the search algorithm. In this case, we do not need to parse the log file, as our test function only prints out the function results. If your tool prints a complicated log, you need to do some parsing.   
+```java
+		solution.setObjective(0, Double.valueOf(DropWave.GetLog()));
+```
+
+Now, we can write the code to run the search algorithm. 
+```java
+ public static void main(String[] args) throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, ParserConfigurationException, TransformerException, NoSuchMethodException,
+			SecurityException, SAXException, IOException, InterruptedException {
+
+		Tool SE = new Tool("DropWaveExample");
+		Vector<Parameter> keywords = new Vector<Parameter>();
+		keywords.addElement(
+				new Parameter("java", "-jar", Parameter.ParameterType.Optional, Parameter.ValueType.File, false));
+		keywords.addElement(new Parameter("DROPWAVEFUNCTION.jar", "", Parameter.ParameterType.Compulsory,
+				Parameter.ValueType.File, false));
+
+		OptionsSet os = new OptionsSet();
+
+		ItemGroup x1 = new ItemGroup();
+
+		for (double x = -5.12; x < 5.13; x = x + 0.01) {
+
+			x1.add(new BigDecimal(x).setScale(2, RoundingMode.CEILING).toString());
+		}
+		os.add(x1);
+		keywords.addElement(new Parameter("", "1", Parameter.ParameterType.Compulsory, Parameter.ValueType.SetOfOptions,
+				os, true, true));
+		keywords.addElement(new Parameter("", "1", Parameter.ParameterType.Compulsory, Parameter.ValueType.SetOfOptions,
+				os, true, true));
+
+		SE.SetKeywords(keywords);
+
+		AlgorithmParameters.MaxEvaluations = 500;
+		AlgorithmParameters.PopulationSize = 50;
+
+		Problem pro = new DropWaveProblem(SE);
+
+		ParallelNSGAII EA1 = new ParallelNSGAII(pro);
+
+		Vector<OptimizationAlgorithm> Algorithms = new Vector<OptimizationAlgorithm>();
+		Algorithms.add(EA1);
+
+		MultiAlgorithmsRunnerMultiThreded m = new MultiAlgorithmsRunnerMultiThreded(Algorithms, pro);
+
+		m.Run();
+
+	}
+
+```
+
+Here, we define the tool we want to optimise and its parameters. Usually, the first parameter is the command we use to run the tool. In our case, the tool is written in Java, so we use 'java—jar', and in Python, we should use 'python' as the first parameter. The second parameter is the tool file named 'DROPWAVEFUNCTION.jar'. 
+
+The TPO does not support decimal parameters directly, so to workaround this, we set the values in 'Group' for the two parameters each in one 'Group'. We set the two parameters to 'Compulsory'. 
+```java
+	Tool SE = new Tool("DropWaveExample");
+		Vector<Parameter> keywords = new Vector<Parameter>();
+		keywords.addElement(
+				new Parameter("java", "-jar", Parameter.ParameterType.Optional, Parameter.ValueType.File, false));
+		keywords.addElement(new Parameter("DROPWAVEFUNCTION.jar", "", Parameter.ParameterType.Compulsory,
+				Parameter.ValueType.File, false));
+
+		OptionsSet os = new OptionsSet();
+
+		ItemGroup x1 = new ItemGroup();
+
+		for (double x = -5.12; x < 5.13; x = x + 0.01) {
+
+			x1.add(new BigDecimal(x).setScale(2, RoundingMode.CEILING).toString());
+		}
+		os.add(x1);
+		keywords.addElement(new Parameter("", "1", Parameter.ParameterType.Compulsory, Parameter.ValueType.SetOfOptions,
+				os, true, true));
+		keywords.addElement(new Parameter("", "1", Parameter.ParameterType.Compulsory, Parameter.ValueType.SetOfOptions,
+				os, true, true));
+
+		SE.SetKeywords(keywords);
+```
+Finally, we choose the search algorithm we want to use and add it to the 'vector'.
 
 ```java
- public static void main(String[] args) {
+	AlgorithmParameters.MaxEvaluations = 500;
+		AlgorithmParameters.PopulationSize = 50;
 
+		Problem pro = new DropWaveProblem(SE);
 
-             Tool SE = new Tool("SimpleExample");
-             Vector<Parameter> keywords = new Vector<Parameter>();
-             keywords.addElement(new Parameter("java","-jar", Parameter.ParameterType.Compulsory,Parameter.ValueType.File,false ));
-             keywords.addElement(new Parameter("SimpleExample.jar","", Parameter.ParameterType.Compulsory,Parameter.ValueType.File,false ));
-             keywords.addElement(new Parameter("","1", Parameter.ParameterType.Compulsory,Parameter.ValueType.Number,0,100,true ));
-             keywords.addElement(new Parameter("","2", Parameter.ParameterType.Compulsory,Parameter.ValueType.Number,0,100,true ));
+		ParallelNSGAII EA1 = new ParallelNSGAII(pro);
 
-             SE.SetKeywords(keywords);
+		Vector<OptimizationAlgorithm> Algorithms = new Vector<OptimizationAlgorithm>();
+		Algorithms.add(EA1);
 
-             ParallelGA EA = new ParallelGA(new SimpleExampleProblem(SE));
+		MultiAlgorithmsRunnerMultiThreded m = new MultiAlgorithmsRunnerMultiThreded(Algorithms, pro);
 
-             SE.Report(EA.Run().get(0));
+		m.Run();
 
-     }
+	}
+
 ```
 
 
-1. Line 4: we were given the tool a name
 
 
-2. Line 6 and 7: we added the required commands for java to run from the command line. For both these two-line, we used `Parameter.ParameterType.Compulsory` which mean these parameters are essential to run the tool.
 
 
-3. Line 8 and 9 these are the parameters that we want to optimize. We used  `Parameter.ValueType.Number` and we set the maximum and minimum boundaries `0` and `100`. Also, we set optimize to `true`, means we want to optimize this parameter.
 
+The output of TPO is an XML file that contains the parameters and their optimal values.
 
-4. Line 11: we set the parameters to the tool.
-
-
-5. Line 13: `ParallelGA` is the algorithm that we want to use to optimize the parameters. See Optimization algorithms section.
-
-
-6. Line 14: we started to optimize the parameters.
-
-We need now to write our solution evaluator that evaluate the solutions found by the optimization algorithm.
-
-```java
- public class SimpleExampleProblem extends Problem {
-
-     public SimpleExampleProblem(Tool tool) {
-             super(tool);
-             setNumberOfObjectives(1);
-             // TODO Auto-generated constructor stub
-     }
-
-     /**
-      *
-      */
-     private static final long serialVersionUID = 1L;
-
-     @Override
-     public void evaluate(IntegerSolution solution) {
-             Tool SimpleExample = new Tool(this.tool);
-             SimpleExample.SetParametersValueBasedOnOptimizationAlgorithm(solution);
-             try {
-                     SimpleExample.Run();
-             } catch (IOException e) {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-             }
-
-             int CountOnes=Integer.valueOf(SimpleExample.GetLog());
-                     solution.setObjective(0, -1 * CountOnes);
-
-     }
-
-     }
-```
-
-The above code will evaluate the solution by running the tool and evaluate the output.
-
-**NOTE**: We multiply the `CountOnes` by -1 because the algorithm tries to find the minimum solution and our optimization problem is a maximised problem.
-
-The output of TPO is an XML file that contains the parameters and its optimal values.
-
-`ParametersReport.xml`
+`BestParameters_DropWaveExample_1`
 
 ```xml
  <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-     <Parameters>
- <Parameter>
-     <Keyword/>
-     <Value>1</Value>
-     <Used>True</Used>
- </Parameter>
- <Parameter>
-     <Keyword/>
-     <Value>100</Value>
-     <Used>True</Used>
- </Parameter>
-     </Parameters>
+<Tool Name="DropWaveExample">
+    <Parameters>
+        <Parameter>
+            <Keyword/>
+            <Value>0.02</Value>
+            <Used>true</Used>
+        </Parameter>
+        <Parameter>
+            <Keyword/>
+            <Value>0.00</Value>
+            <Used>true</Used>
+        </Parameter>
+    </Parameters>
+    <Objectives>-0.98557043038297653669843612078693695366382598876953125</Objectives>
+</Tool>
+
 ```
 
-### Multi-objective optimization
+### Multi-objective optimisation
 
-We changed the tool that we want to optimize to fill in two arrays. Our objective is to fill in the first array by ones and the second by zeros.
+TPO can optimise multi-objective problems; however, you need to make small changes to the solution evaluator. You have to set the number of objectives and the feedback to the search algorithms for all the objective values. See the example below.  
 
 ```java
-     public static void main(String[] args) {
-             // TODO Auto-generated method stub
-
-             int[] num = new int [100];
-             int[] num2 = new int [100];
-             int StartIndex=Integer.valueOf(args[0]);
-             int EndIndex=Integer.valueOf(args[1]);
-
-             int StartIndex2=Integer.valueOf(args[2]);
-             int EndIndex2=Integer.valueOf(args[3]);
-             for(int i=StartIndex ; i < EndIndex ; ++i) {
-                     num[i]=1;
-             }
-
-             for(int i=StartIndex2 ; i < EndIndex2 ; ++i) {
-                     num2[i]=1;
-             }
-             //Check if all elements are ones
-
-             int CountOnes=0;
-             int CountOnes2=0;
-             for(int i=0 ; i < num.length ; ++i) {
-                     if(num[i]==1)
-                             CountOnes++;
-                     if(num2[i]==1)
-                             CountOnes2++;
-             }
-             System.out.println(CountOnes+"-"+CountOnes2);
-
-     }
-```
-
-The tool can be run from the command line using this command.
-
-```sh
-java -jar SimpleExample.jar 0 99 94 85
-```
-
-The output
-
-```sh
-99-0
-```
-
-We need to change the parameters to add these new parameters.
-
-```java
-     Tool SE = new Tool("SimpleExample");
-             Vector<Parameter> keywords = new Vector<Parameter>();
-             keywords.addElement(new Parameter("java","-jar", Parameter.ParameterType.Compulsory,Parameter.ValueType.File,false ));
-             keywords.addElement(new Parameter("SimpleExample.jar","", Parameter.ParameterType.Compulsory,Parameter.ValueType.File,false ));
-
-             keywords.addElement(new Parameter("","1", Parameter.ParameterType.Compulsory,Parameter.ValueType.Number,0,100,true ));
-             keywords.addElement(new Parameter("","2", Parameter.ParameterType.Compulsory,Parameter.ValueType.Number,0,100,true ));
-
-             keywords.addElement(new Parameter("","1", Parameter.ParameterType.Compulsory,Parameter.ValueType.Number,0,100,true ));
-             keywords.addElement(new Parameter("","2", Parameter.ParameterType.Compulsory,Parameter.ValueType.Number,0,100,true ));
-
-             SE.SetKeywords(keywords);
-
-
-             ParallelNSGAII  EA = new ParallelNSGAII(new SimpleExampleProblem(SE));
-
-
-             SE.Report(EA.Run().get(0));
-```
-
-Also, we need to change the number of objectives.
-
-```java
-     public class SimpleExampleProblem extends Problem {
-
-     public SimpleExampleProblem(Tool tool) {
-             super(tool);
-             setNumberOfObjectives(2);
-             // TODO Auto-generated constructor stub
-     }
-
-     /**
-      *
-      */
-     private static final long serialVersionUID = 1L;
-
-     @Override
-     public void evaluate(IntegerSolution solution) {
-             // TODO Auto-generated method stub
-             Tool SimpleExample = new Tool(this.tool);
-
-
-             SimpleExample.SetParametersValueBasedOnOptimizationAlgorithm(solution);
-             SimpleExample.SetNoWorkingPath(true);
-
-             try {
-                     SimpleExample.Run();
-             } catch (IOException e) {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-             }
-
-             int CountOnes=Integer.valueOf(SimpleExample.GetLog().split("-")[0]);
-             int CountOnes2=Integer.valueOf(SimpleExample.GetLog().split("-")[1]);
-
-                     solution.setObjective(0, -1 * CountOnes);
-                     solution.setObjective(1,  CountOnes2 );
-
-
-
-
-     }
-
-     }
+public class DropWaveProblem extends Problem {
+	private static final long serialVersionUID = 1L;
+	public DropWaveProblem(Tool tool) {
+		super(tool);
+		setNumberOfObjectives(2);
+	}
+	@Override
+	public void evaluate(IntegerSolution solution) {
+		Tool DropWave = new Tool(this.tool);
+		DropWave.SetParametersValueBasedOnOptimizationAlgorithm(solution);
+		DropWave.SetNoWorkingPath(true);
+		try {
+			DropWave.Run();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		solution.setObjective(0, Double.valueOf(DropWave.GetLog()));
+		solution.setObjective(1, Double.valueOf(DropWave.GetLog()));
+	}
+}
 ```
 
 
-1. Line 5: we set the number of objectives to 2
 
 
-2. Line 34: we add the second objective that decreases the ones in the second array.
- 
- ## 2. Advanced example
-
+   
 ### Single objective optimisation
 
 In this example, we optimise the parameters of a tool called Buccaneer. It is a tool to build a protein model, and it has too many parameters. We will optimise some of these parameters.
@@ -351,12 +314,14 @@ In the below code, we defined Buccaneer parameters and their values. In line 10,
              keywords.addElement(new Parameter("-buccaneer-fast","",Parameter.ParameterType.Optional,Parameter.ValueType.String,true));
              tool.SetKeywords(keywords);
              tool.Run();
-             ParallelGA EA= new ParallelGA(new BuccaneerOptimizationProblem(tool));
-             List<IntegerSolution> sol=EA.Run();
-             tool.Report(sol.get(0));
+        ParallelNSGAII EA1 = new ParallelNSGAII(new BuccaneerOptimizationProblem(tool));
+		Vector<OptimizationAlgorithm> Algorithms = new Vector<OptimizationAlgorithm>();
+		Algorithms.add(EA1);
+		MultiAlgorithmsRunnerMultiThreded m = new MultiAlgorithmsRunnerMultiThreded(Algorithms, pro);
+		m.Run();
 ```
 
-Now we have to write the evaluator class. As you can see below in the evaluate method, we set the new Buccaneer’s parameters values, and we run it using these new parameters values. Once Buccaneer done, it will create a file called Buccaneer.pdb which we will use to evaluate the performance of Buccaneer. In line 23, we use Output to search for this file in the Buccaneer directory and calculate the completeness we use here to evaluate the Buccaneer performance.
+Now we have to write the evaluator class. As you can see below in the evaluate method, we set the new Buccaneer’s parameters values, and we run it using these new parameters values. Once Buccaneer done, it will create a file called Buccaneer.pdb which we will use to evaluate the performance of Buccaneer. In line 23, we use output to search for this file in the Buccaneer directory and calculate the completeness we use here to evaluate the Buccaneer performance.
 
 ```java
      @SuppressWarnings("serial")
@@ -389,7 +354,7 @@ Now we have to write the evaluator class. As you can see below in the evaluate m
              }
 ```
 
-## 3. Optimization algorithms
+## 3. Optimisation algorithms
 
 Here are the algorithms that are supported by TPO
 
@@ -411,9 +376,9 @@ Here are the algorithms that are supported by TPO
 | RandomSearch | Multi | 
 
 
-## 4. Configuration of optimization algorithms
+## 4. Configuration of optimisation algorithms
 
-Below are the optimization algorithms parameters. These parameters set to the default. However, it can be changed using static class AlgorithmParameters
+Below are the optimisation algorithm parameters. These parameters set to the default. However, it can be changed using static class AlgorithmParameters
 
 ```java
      public static double CrossoverProbability=0.9;
@@ -531,7 +496,7 @@ If you want to save a log file produced by the tool that you want to optimise, `
   author = {Alharbi,Emad},
   doi = {},
   month = {03},
-  title = {{TPO: A tool for optimizing a tool's parameters}},
+  title = {{TPO: A tool for optimising a tool's parameters}},
   url = {https://github.com/E-Alharbi/TPO},
   year = {2022}
 }
