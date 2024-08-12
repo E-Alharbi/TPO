@@ -47,7 +47,9 @@ The document  contains the following
 6. Output of optimised tool
     * Search for files
     * Save the log file
-
+      
+7. Resume running
+   
     
 ## 1. Simple example
 
@@ -489,6 +491,15 @@ If you want to save a log file produced by the tool that you want to optimise, `
      Output out = new Output(Tool);
      out.SaveLog();
 ```
+
+## 7. Resume running
+    TPO saves intermediate results in 'Checkpoints'. You can rerun it if it stops, and TPO will resume at the last saved checkpoint.  
+
+## 8. Monitoring search algorithm progress
+TPO visualizes the progress of search algorithms by showing a progress bar for each iteration. For example, if you set 'AlgorithmParameters.MaxEvaluations = 500' and AlgorithmParameters.PopulationSize = 50, TPO will run 10 iterations and show a progress bar for each iteration.  
+
+![Screen Recording 2024-08-08 at 11 21 26](https://github.com/user-attachments/assets/c83a4d13-6788-4179-b236-eb661f5b19e9)
+
 
 ## Citing
 ```
