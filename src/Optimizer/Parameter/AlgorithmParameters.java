@@ -51,8 +51,10 @@ public class AlgorithmParameters {
 	public static int K = 1;
 	public static String BestParametersReport = "ParametersReport.xml";
 	public static String BestParametersReportEncoded = "BestParametersReportEncoded.xml";
-	public static String ResumeDir = "./ResumeRun";
+	//public static String ResumeDir = "./ResumeRun";
+	public static String ResumeDir = "./Checkpoints";
 	public static String BaseIterationFolder = "iteration_";
+	public static String CheckpointsDir = "./Checkpoints";
 
 	/*
 	 * public static int getMaxEvaluations(OptimizationAlgorithm Algorithm) {
@@ -127,7 +129,7 @@ public class AlgorithmParameters {
 	}
 
 	public static void setResumeDir(int Iteration) {
-		String path = "./ResumeRun" + "/" + BaseIterationFolder + Iteration;
+		String path = CheckpointsDir + "/" + BaseIterationFolder + Iteration;
 		new Folder().CreatePath(path);
 		AlgorithmParameters.ResumeDir = path;
 	}
